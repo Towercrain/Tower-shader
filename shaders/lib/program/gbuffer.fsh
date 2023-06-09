@@ -127,6 +127,10 @@ void main() {
         diffuse *= texture(gtexture, v_TextureCoord);
     #endif
 
+    #if !defined tsh_PROGRAM_gbuffers_damagedblock
+        diffuse = tshf_ColorDecode(diffuse);
+    #endif
+
     #if defined tsh_PROGRAM_gbuffers_entities
         if(entityId == 16384) {diffuse = vec4(1.0);}
     #endif
@@ -138,10 +142,6 @@ void main() {
     #endif
 
     if(diffuse.a < alphaTestRef) {discard;}
-
-    #if !defined tsh_PROGRAM_gbuffers_damagedblock
-        diffuse = tshf_ColorDecode(diffuse);
-    #endif
 
     #if defined tsh_PROGRAM_gbuffers_entities
         vec4 entityColorDecoded = tshf_ColorDecode(entityColor);
@@ -248,7 +248,7 @@ void main() {
     #endif
 
     #if defined tsh_PROGRAM_gbuffers_entities
-        if(entityId == 16384) {light.rgb = vec3(2.0);}
+        if(entityId == 16384) {light = vec3(1.0);}
     #endif
 
     // ======== combining diffuse and light to color ========
