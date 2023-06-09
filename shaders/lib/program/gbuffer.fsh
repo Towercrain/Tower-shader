@@ -271,6 +271,9 @@ void main() {
 
     #if !defined tsh_PROGRAM_gbuffers_skytextured
         fogDensity = tshf_CalcFogDensity(scenePos, fogStart, fogEnd, fogShape);
+    #endif
+
+    #if !defined tsh_PROGRAM_gbuffers_skybasic
         fogDensity *= 0.9;
     #endif
 
