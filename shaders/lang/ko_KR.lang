@@ -1,0 +1,11 @@
+option.tsh_SHADERS_INFORMATION = Tower Shader (제작
+value.tsh_SHADERS_INFORMATION.0 = Towercrain)
+
+option.sunPathRotation = 궤도 기울기
+option.sunPathRotation.comment = 해와 달, 별의 궤도를 기울입니다. 값이 0보다 작을 경우, 북반구에서 보이는 궤도를 나타냅니다.
+
+option.tsh_ORTHOGRAPHIC_PROJECTION = 직교 투영
+option.tsh_ORTHOGRAPHIC_PROJECTION.comment = 투영 모드를 직교 투영으로 변경합니다. 구조적 문제로 인해 X레이 효과가 동반되며, 과도한 정보를 노출시킬 수 있습니다.
+
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = 직교 투영 시야 거리
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = 직교 투영 모드에서 보이는 범위를 제어합니다. 시야 효과(활, 망원경, 시야 범위 등)에 영향을 받습니다.

@@ -1,0 +1,11 @@
+option.tsh_SHADERS_INFORMATION = Tower Shader (made by
+value.tsh_SHADERS_INFORMATION.0 = Towercrain)
+
+option.sunPathRotation = Sun Path Rotation
+option.sunPathRotation.comment = rotates sun, moon and stars
+
+option.tsh_ORTHOGRAPHIC_PROJECTION = Orthographic Projection Mode
+option.tsh_ORTHOGRAPHIC_PROJECTION.comment = Change the projection mode to orthographic projection. This mode may display too much information (like X-ray and minimap) for normal gameplay.
+
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = Orthographic View Distance
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = Set viewing area on orthographic projection mode. The view distance is affected by FOV effects (bow, spyglass, FOV settings, etc).
