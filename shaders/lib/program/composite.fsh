@@ -35,8 +35,8 @@ float calcExposure(float brightness) {
 
 float calcVignette(vec2 pos) {
 
-    vec2 a = pos * (4.0 - 4.0 * pos);
-    float vignette = (9.0 / 13.0) * (a.x * a.y + 1.0);
+    vec2 a = pos - pos * pos;
+    float vignette = (45.0 / 17.0) * (a.x * a.y + 0.35);
 
     return vignette;
 
