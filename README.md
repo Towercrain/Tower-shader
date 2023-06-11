@@ -1,4 +1,6 @@
 # Tower-shader
  minecraft shader pack
 
-version 1.0.2.2
+This shader pack has been tested on minecraft 1.19.4 with optifine.
+
+version : 1.0.2.2
