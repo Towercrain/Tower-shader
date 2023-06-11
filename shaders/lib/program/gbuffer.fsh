@@ -174,8 +174,6 @@ void main() {
 
         light = ambientLight + blockLight;
 
-        if(1.03 < v_LightmapCoord.x || 1.03 < v_LightmapCoord.y) {light = vec3(1.0);}
-
     #endif
 
     #if defined tsh_USE_SHADOW

@@ -99,7 +99,7 @@ void main() {
     #endif
 
     #ifdef tsh_VARYING_LightmapCoord
-        v_LightmapCoord = (1.0 / 240.0) * vaUV2;//(1.0 / 256.0) * vaUV2 + (0.5 / 16.0);
+        v_LightmapCoord = clamp((1.0 / 240.0) * vaUV2, 0.0, 1.0);//(1.0 / 256.0) * vaUV2 + (0.5 / 16.0);
     #endif
 
     #ifdef tsh_VARYING_AmbientShading
