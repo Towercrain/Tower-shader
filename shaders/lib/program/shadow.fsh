@@ -26,8 +26,8 @@ uniform sampler2D shadowtex1;
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 
-const int shadowMapResolution = tsh_ShadowMapResolution;
-const float shadowDistance = tsh_ShadowDistance;
+const int shadowMapResolution = 2048;
+const float shadowDistance = 160.0;
 
 void main() {
 
