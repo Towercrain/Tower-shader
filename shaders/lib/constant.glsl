@@ -2,8 +2,14 @@
 
 #define tsh_PI 3.1415927410125732421875
 
-#define tsh_ENCODE_GAMMA 2.2
+// ======== gamma reference ========
+
+// input -> decode -> process -> encode -> output
+
 #define tsh_DECODE_GAMMA 2.2
+#define tsh_ENCODE_GAMMA 2.2
+
+// ======== ambient light position ========
 
 #define tsh_VANILLA_LIGHT_POS_0 normalize(vec3( 1.0, 4.0, -3.0))
 //#define tsh_VANILLA_LIGHT_POS_1 normalize(vec3(-1.0, 4.0, 3.0))
@@ -16,12 +22,12 @@
 //#define tsh_ORTHOGRAPHIC_PROJECTION
 #define tsh_ORTHOGRAPHIC_VIEW_DISTANCE 16.0 // [1.0 1.5 2.0 3.0 4.0 6.0 8.0 12.0 16.0 24.0 32.0 48.0 64.0 96.0 128.0 192.0 256.0]
 
-// ========  ========
+// ======== atmosphere ========
 
-const vec3 tsh_WAVELENGTH = vec3(612.0, 549.0, 464.0); // nanometers
+const vec3 tsh_WAVELENGTH = vec3(612.0, 549.0, 464.0); // unit : nanometers
 const vec3 tsh_ATMOSPHERE_DIFFUSE = 0.11627981 * pow(532.0 / tsh_WAVELENGTH, vec3(4.0));
 
-// ======== colors ========
+// ======== color ========
 
 #define tsh_MINIMUM_SKY_LIGHT_INTENSITY (1.0 / 128.0)
 #define tsh_NIGHT_VISION_INTENSITY (1.0 / 16.0)
@@ -48,7 +54,7 @@ const vec3 tsh_ATMOSPHERE_DIFFUSE = 0.11627981 * pow(532.0 / tsh_WAVELENGTH, vec
 
 #endif
 
-// ======== ========
+// ======== shadow map ========
 
 const int tsh_ShadowMapResolution = 2048;
 const float tsh_ShadowDistance = 160.0;
