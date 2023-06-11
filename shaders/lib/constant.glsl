@@ -50,5 +50,5 @@ const vec3 tsh_ATMOSPHERE_DIFFUSE = 0.11627981 * pow(532.0 / tsh_WAVELENGTH, vec
 
 // ======== ========
 
-const int tsh_ShadowMapResolution = 2048;
-const float tsh_ShadowDistance = 160.0;
+#define tsh_ShadowMapResolution 2048
+#define tsh_ShadowDistance 160.0
