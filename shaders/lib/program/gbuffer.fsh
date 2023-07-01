@@ -183,7 +183,7 @@ void main() {
         vec4 shadowPlayerPos = playerPos;
 
         #if (defined tsh_PROGRAM_gbuffers_hand || defined tsh_PROGRAM_gbuffers_hand_water) && !defined tsh_ORTHOGRAPHIC_PROJECTION
-            shadowPlayerPos.xyz /= MC_HAND_DEPTH;
+            shadowPlayerPos.xyz *= 1.0 / MC_HAND_DEPTH;
         #endif
 
         #ifdef tsh_VARYING_BlockId

@@ -25,13 +25,13 @@ vec4 shadow_DistortShadowClipPos(vec4 shadowClipPos) {
 
 }
 
-vec3 shadow_CalcShadowColor(vec4 color) {
+vec4 shadow_CalcShadowColor(vec4 color) {
 
     float a = (1.0 - color.a);
     vec3 b = color.a * sqrt(color.rgb) + a;
     vec3 shadowColor = a * pow(b, vec3(4.0));
 
-    return shadowColor;
+    return vec4(shadowColor, 1.0);
 
 }
 
@@ -91,10 +91,10 @@ vec3 shadow_CalcShadowLight(vec4 shadowClipPos) {
         texelFetch(shadowtex1, shadowTexelCoord + ivec2( 0,  1), 0).x
     );
     mat4x3 shadowMapColor = mat4x3(
-        shadow_CalcShadowColor(texelFetch(shadowcolor0, shadowTexelCoord + ivec2(-1,  0), 0)),
-        shadow_CalcShadowColor(texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 1,  0), 0)),
-        shadow_CalcShadowColor(texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 0, -1), 0)),
-        shadow_CalcShadowColor(texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 0,  1), 0))
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2(-1,  0), 0).rgb,
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 1,  0), 0).rgb,
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 0, -1), 0).rgb,
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 0,  1), 0).rgb
     );
 
     vec4 shadowMask0 = vec4(lessThan(vec4(shadowScreenPos.z), shadowMapDepth0));

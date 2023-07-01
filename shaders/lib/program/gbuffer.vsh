@@ -67,27 +67,26 @@ void main() {
         mat4 newProjectionMatrix = projectionMatrix;
     #endif
 
+    vec4 vertexColor = vaColor;
+
     vec3 viewNorm = normalMatrix * vaNormal;
     vec3 worldNorm = mat3(gbufferModelViewInverse) * viewNorm;
     vec4 modelPos = vec4(vaPosition, 1.0);
 
-    float vanillaLight = tshf_CalcVanillaLight(worldNorm);
+    float ambientShading = tshf_CalcVanillaLight(worldNorm);
 
     #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
-        vanillaLight *= vaColor.a;
+        vertexColor.a = 1.0;
+        ambientShading *= vaColor.a;
         modelPos.xyz += chunkOffset;
     #endif
 
-    #if defined tsh_PROGRAM_gbuffers_line
-        vec4 clipPos = line_CalcPosition(newProjectionMatrix, vaPosition, vaNormal);
-    #else
-        vec4 clipPos = newProjectionMatrix * modelViewMatrix * modelPos;
-    #endif
+    vec4 clipPos;
 
-    #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
-        vec4 vertexColor = vec4(vaColor.rgb, 1.0);
+    #if defined tsh_PROGRAM_gbuffers_line
+        clipPos = line_CalcPosition(newProjectionMatrix, vaPosition, vaNormal);
     #else
-        vec4 vertexColor = vaColor;
+        clipPos = newProjectionMatrix * modelViewMatrix * modelPos;
     #endif
 
     // ======== write values to output variables ========
@@ -99,11 +98,12 @@ void main() {
     #endif
 
     #ifdef tsh_VARYING_LightmapCoord
-        v_LightmapCoord = clamp((1.0 / 240.0) * vaUV2, 0.0, 1.0);//(1.0 / 256.0) * vaUV2 + (0.5 / 16.0);
+        //v_LightmapCoord = (1.0 / 256.0) * vaUV2 + (0.5 / 16.0);
+        v_LightmapCoord = clamp((1.0 / 240.0) * vaUV2, 0.0, 1.0);
     #endif
 
     #ifdef tsh_VARYING_AmbientShading
-        v_AmbientShading = vanillaLight;
+        v_AmbientShading = ambientShading;
     #endif
 
     #ifdef tsh_VARYING_Normal
