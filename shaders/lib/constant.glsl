@@ -11,9 +11,10 @@
 
 // ======== ambient light position ========
 
-#define tsh_VANILLA_LIGHT_POS_0 normalize(vec3( 1.0, 4.0, -3.0))
+//#define tsh_VANILLA_LIGHT_POS_0 normalize(vec3( 1.0, 4.0,-3.0))
 //#define tsh_VANILLA_LIGHT_POS_1 normalize(vec3(-1.0, 4.0, 3.0))
-#define tsh_VANILLA_LIGHT_POS_1 normalize(vec3(-1.0, -4.0, 3.0))
+#define tsh_AMBIENT_LIGHT_POS_0 normalize(vec3( 1.0, 5.0, -3.0))
+#define tsh_AMBIENT_LIGHT_POS_1 normalize(vec3(-1.0, -5.0, 3.0))
 
 #define tsh_SHADOW_DISTORTION 6.0
 

@@ -87,12 +87,12 @@ vec3 tshf_ColorEncode(vec3 color) {
 
 }
 
-// ======== vanilla light ========
+// ======== ambient light ========
 
-float tshf_CalcVanillaLight(vec3 normal) {
+float tshf_CalcAmbientLight(vec3 normal) {
 
-    float light = max(dot(normal, tsh_VANILLA_LIGHT_POS_0), 0.0)
-                + max(dot(normal, tsh_VANILLA_LIGHT_POS_1), 0.0);
+    float light = max(dot(normal, tsh_AMBIENT_LIGHT_POS_0), 0.0)
+                + max(dot(normal, tsh_AMBIENT_LIGHT_POS_1), 0.0);
     light = 0.5 * light + 0.5;
     light = min(light, 1.0);
     return light;

@@ -73,7 +73,7 @@ void main() {
     vec3 worldNorm = mat3(gbufferModelViewInverse) * viewNorm;
     vec4 modelPos = vec4(vaPosition, 1.0);
 
-    float ambientShading = tshf_CalcVanillaLight(worldNorm);
+    float ambientShading = tshf_CalcAmbientLight(worldNorm);
 
     #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
         vertexColor.a = 1.0;
