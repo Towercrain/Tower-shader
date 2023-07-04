@@ -9,3 +9,6 @@ option.tsh_ORTHOGRAPHIC_PROJECTION.comment = 투영 모드를 직교 투영으�
 
 option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = 직교 투영 시야 거리
 option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = 직교 투영 모드에서 보이는 범위를 제어합니다. 시야 효과(활, 망원경, 시야 범위 등)에 영향을 받습니다.
+
+option.tsh_FAST_SHADOWS = 빠른 그림자
+option.tsh_FAST_SHADOWS.comment = 일부 개체의 그림자 렌더를 비활성화해 계산 속도를 높입니다. 동물, 상자, 표지판 등이 많은 장소에 있을 때 발생하는 성능 저하를 완화하지만, 일부 개체에 의한 그림자가 표시되지 않습니다.

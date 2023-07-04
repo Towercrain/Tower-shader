@@ -18,10 +18,17 @@
 
 #define tsh_SHADOW_DISTORTION 6.0
 
-// ======== orthographic settings ========
+
+// ======== settings ========
 
 //#define tsh_ORTHOGRAPHIC_PROJECTION
 #define tsh_ORTHOGRAPHIC_VIEW_DISTANCE 16.0 // [1.0 1.5 2.0 3.0 4.0 6.0 8.0 12.0 16.0 24.0 32.0 48.0 64.0 96.0 128.0 192.0 256.0]
+
+//#define tsh_FAST_SHADOWS
+
+#ifdef tsh_FAST_SHADOWS
+    //avoiding glsl optimization for this option
+#endif
 
 // ======== atmosphere ========
 
