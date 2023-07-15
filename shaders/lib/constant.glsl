@@ -18,7 +18,6 @@
 
 #define tsh_SHADOW_DISTORTION 6.0
 
-
 // ======== settings ========
 
 //#define tsh_ORTHOGRAPHIC_PROJECTION

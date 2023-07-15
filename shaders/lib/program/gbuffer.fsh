@@ -124,11 +124,11 @@ void main() {
     vec4 diffuse = v_VertexColor;
 
     #ifdef tsh_VARYING_TextureCoord
-        diffuse *= texture(gtexture, v_TextureCoord);
-    #endif
-
-    #if !defined tsh_PROGRAM_gbuffers_damagedblock
-        diffuse = tshf_ColorDecode(diffuse);
+        vec4 textureColor = texture(gtexture, v_TextureCoord);
+        #if !defined tsh_PROGRAM_gbuffers_damagedblock
+            textureColor = tshf_ColorDecode(textureColor);
+        #endif
+        diffuse *= textureColor;
     #endif
 
     #if defined tsh_PROGRAM_gbuffers_entities

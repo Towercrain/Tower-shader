@@ -67,7 +67,7 @@ void main() {
         mat4 newProjectionMatrix = projectionMatrix;
     #endif
 
-    vec4 vertexColor = vaColor;
+    vec4 vertexColor = tshf_ColorDecode(vaColor);
 
     vec3 viewNorm = normalMatrix * vaNormal;
     vec3 worldNorm = mat3(gbufferModelViewInverse) * viewNorm;
