@@ -32,10 +32,6 @@ uniform mat4 projectionMatrix;
 
 void main() {
 
-    vec4 modelPos = vec4(vaPosition + chunkOffset, 1.0);
-
-    modelPos.xyz += chunkOffset;
-
     vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(vaPosition + chunkOffset, 1.0);
     clipPos = shadow_DistortShadowClipPos(clipPos);
 
