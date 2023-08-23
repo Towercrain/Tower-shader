@@ -36,7 +36,7 @@ const vec3 tsh_ATMOSPHERE_DIFFUSE = 0.11627981 * pow(532.0 / tsh_WAVELENGTH, vec
 
 // ======== color ========
 
-#define tsh_MINIMUM_SKY_LIGHT_INTENSITY (1.0 / 128.0)
+#define tsh_MINIMUM_SKY_LIGHT_INTENSITY (1.0 / 64.0)
 #define tsh_NIGHT_VISION_INTENSITY (1.0 / 16.0)
 #define tsh_BLOCK_LIGHT_INTENSITY (1.0 / 2.0)
 
@@ -46,17 +46,17 @@ const vec3 tsh_ATMOSPHERE_DIFFUSE = 0.11627981 * pow(532.0 / tsh_WAVELENGTH, vec
 
 #if defined tsh_DIMENSION_THE_NETHER
 
-    const float tsh_MINIMUM_LIGHT_INTENSITY = (1.0 / 128.0);
+    const float tsh_MINIMUM_LIGHT_INTENSITY = (1.0 / 64.0);
     const vec3 tsh_MINIMUM_LIGHT_COLOR = tsh_MINIMUM_LIGHT_INTENSITY * vec3(1.48, 0.89, 0.74);
 
 #elif defined tsh_DIMENSION_OVERWORLD
 
-    const float tsh_MINIMUM_LIGHT_INTENSITY = (1.0 / 1024.0);
+    const float tsh_MINIMUM_LIGHT_INTENSITY = (1.0 / 256.0);
     const vec3 tsh_MINIMUM_LIGHT_COLOR = tsh_MINIMUM_LIGHT_INTENSITY * vec3(1.0, 1.0, 1.0);
 
 #elif defined tsh_DIMENSION_THE_END
 
-    const float tsh_MINIMUM_LIGHT_INTENSITY = (1.0 / 128.0);
+    const float tsh_MINIMUM_LIGHT_INTENSITY = (1.0 / 64.0);
     const vec3 tsh_MINIMUM_LIGHT_COLOR = tsh_MINIMUM_LIGHT_INTENSITY * vec3(1.08, 0.9, 1.79);
 
 #endif

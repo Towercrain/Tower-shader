@@ -48,19 +48,21 @@ void main() {
         for(float y = 0.5 / N; y < 1.0; y += 1.0 / N) {
             vec2 sampleCoord = vec2(x,y);
             vec3 sampleColor = texture(colortex0, sampleCoord).rgb;
-            float sampleBrightness = dot(sampleColor, srgbWeight);
+            float sampleBrightness = dot(tshf_TowerShaderToneMap(sampleColor), srgbWeight);
             float weight = calcWeight(sampleCoord);
             averageBrightness += sampleBrightness * weight;
         }
     }
-    averageBrightness /= N * N;
+    averageBrightness *= 1.0 / (N * N);
 
     float previousBrightness = texture(colortex1, vec2(0.0)).x;
-    if(previousBrightness < (1.0 / 32768.0)) {previousBrightness = 0.5;}
+    if(previousBrightness < (1.0 / 131072.0)) {previousBrightness = averageBrightness;}
+
+    float mixedBrightness = mix(averageBrightness, previousBrightness, exp(-frameTime));
 
     // ======== write values to output variables ========
 
-    brightness = max(exp(mix(log(previousBrightness), log(averageBrightness), min(frameTime, 0.5))), (1.0 / 16384.0));
+    brightness = max(mixedBrightness, (1.0 / 65536.0));
     texCoord = vaUV0;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(vaPosition, 1.0);

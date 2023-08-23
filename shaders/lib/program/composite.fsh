@@ -29,7 +29,7 @@ const bool colortex1Clear = false;
 
 float calcExposure(float brightness) {
 
-    return 0.4 * pow(brightness, -1.0 / 2.0);
+    return 0.25 / (brightness + tsh_NIGHT_VISION_INTENSITY);
 
 }
 
@@ -42,12 +42,6 @@ float calcVignette(vec2 pos) {
 
 }
 
-vec3 towerShaderToneMap(vec3 color) {
-
-    return 1.0 - 1.0 / ((4.0 * color + 1.0) * color + 1.0);
-
-}
-
 void main() {
 
     vec4 color = texture(colortex0, texCoord);
@@ -57,8 +51,7 @@ void main() {
 
     color.rgb *= exposure * vignette;
 
-    //color.rgb = 1.0 - exp(-color.rgb);
-    color.rgb = towerShaderToneMap(color.rgb);
+    color.rgb = tshf_TowerShaderToneMap(color.rgb);
 
     // ======== write values to output variables ========
 

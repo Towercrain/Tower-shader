@@ -132,3 +132,13 @@ float tshf_CalcLinearDepth(mat4 projectionMatrix, float depth) {
     return -projectionMatrix[3].z / (2.0 * depth - 1.0 + projectionMatrix[2].z);
 
 }
+
+// ======== color process ========
+
+vec3 tshf_TowerShaderToneMap(vec3 color) {
+
+    color = max(color, 0.0);
+
+    return 1.0 - 1.0 / (((color + 1.0) * color + 1.0) * color + 1.0);
+
+}
