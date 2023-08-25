@@ -15,7 +15,9 @@ out vec4 outColor1;
 
 // ======== uniform ========
 
+uniform float nightVision;
 uniform vec2 viewResolution;
+
 uniform mat4 gbufferProjectionInverse;
 
 uniform sampler2D colortex0;
@@ -40,7 +42,7 @@ const mat3 nLMSToSRGB = mat3(
 
 float calcExposure(float brightness) {
 
-    return 0.25 / (brightness + tsh_NIGHT_VISION_INTENSITY);
+    return 0.25 / (brightness + mix(tsh_NIGHT_VISION_INTENSITY, tsh_MINIMUM_LIGHT_INTENSITY, nightVision));
 
 }
 

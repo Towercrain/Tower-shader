@@ -162,9 +162,7 @@ void main() {
         vec3 skyLight = sqrt(skyColorDecoded) + tsh_MINIMUM_SKY_LIGHT_COLOR;
         skyLight *= lighting.y;
 
-        vec3 minimumLight = tsh_MINIMUM_LIGHT_COLOR + tsh_NIGHT_VISION_COLOR * nightVision;
-
-        vec3 ambientLight = skyLight + minimumLight;
+        vec3 ambientLight = skyLight + tsh_MINIMUM_LIGHT_COLOR;
 
         #ifdef tsh_VARYING_AmbientShading
             ambientLight *= v_AmbientShading;
