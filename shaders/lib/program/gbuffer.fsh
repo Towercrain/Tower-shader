@@ -207,7 +207,7 @@ void main() {
 
         shadowLightColor *= exp(-tsh_ATMOSPHERE_DIFFUSE / max(shadowLightDir.y, 0.0));
         shadowLightColor *= 1.0 - rainStrength;
-        if(dot(gbufferModelView[2].xyz, sunPosition) < 0.0) {
+        if(dot(gbufferModelView[1].xyz, sunPosition) < 0.0) {
             shadowLightColor *= tsh_MINIMUM_SKY_LIGHT_COLOR * moonBrightness;
         }
 
