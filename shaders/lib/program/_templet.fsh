@@ -17,6 +17,7 @@ uniform sampler2D colortex0;
 
 // ======== constant and function ========
 
+#include "/lib/color.glsl"
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 

@@ -47,6 +47,7 @@ uniform mat4 gbufferModelViewInverse;
 
 // ======== constant and function ========
 
+#include "/lib/color.glsl"
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 
@@ -57,17 +58,15 @@ uniform mat4 gbufferModelViewInverse;
 void main() {
 
     #ifdef tsh_ORTHOGRAPHIC_PROJECTION
-        mat4 newProjectionMatrix = mat4(
-            vec4((1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * projectionMatrix[0].x, 0.0, 0.0, 0.0),
-            vec4(0.0, (1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * projectionMatrix[1].y, 0.0, 0.0),
-            vec4(0.0, 0.0, -1.0 / 384.0, 0.0),
-            vec4(0.0, 0.0, 0.0, 1.0)
-        );
-    #else
-        mat4 newProjectionMatrix = projectionMatrix;
+        #define projectionMatrix mat4( \
+            vec4((1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * projectionMatrix[0].x, 0.0, 0.0, 0.0), \
+            vec4(0.0, (1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * projectionMatrix[1].y, 0.0, 0.0), \
+            vec4(0.0, 0.0, -1.0 / 1024.0, 0.0), \
+            vec4(0.0, 0.0, 0.0, 1.0) \
+        )
     #endif
 
-    vec4 vertexColor = tshf_ColorDecode(vaColor);
+    vec4 vertexColor = vec4(color_SRGBEOTF(vaColor.rgb), vaColor.a);
 
     vec3 viewNorm = normalMatrix * vaNormal;
     vec3 worldNorm = mat3(gbufferModelViewInverse) * viewNorm;
@@ -84,9 +83,9 @@ void main() {
     vec4 clipPos;
 
     #if defined tsh_PROGRAM_gbuffers_line
-        clipPos = line_CalcPosition(newProjectionMatrix, vaPosition, vaNormal);
+        clipPos = line_CalcPosition(projectionMatrix, vaPosition, vaNormal);
     #else
-        clipPos = newProjectionMatrix * modelViewMatrix * modelPos;
+        clipPos = projectionMatrix * modelViewMatrix * modelPos;
     #endif
 
     // ======== write values to output variables ========

@@ -46,7 +46,6 @@ uniform vec3 sunPosition;
 uniform float nightVision;
 uniform float rainStrength;
 uniform float moonBrightness;
-uniform float hideGUISmooth;
 
 uniform int renderStage;
 uniform float alphaTestRef;
@@ -63,13 +62,14 @@ uniform sampler2D gtexture;
 //uniform sampler2D lightmap;
 
 #if defined tsh_USE_SHADOW
-    uniform sampler2D shadowtex0;
-    uniform sampler2D shadowtex1;
+    uniform sampler2DShadow shadowtex0;
+    uniform sampler2DShadow shadowtex1;
     uniform sampler2D shadowcolor0;
 #endif
 
 // ======== constant and function ========
 
+#include "/lib/color.glsl"
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 
@@ -81,43 +81,22 @@ uniform sampler2D gtexture;
     #include "/lib/module/shadow.glsl"
 #endif
 
-float bayer2(vec2 fragCoord) {
-
-    return fract(dot(mod(floor(fragCoord), 2.0), vec2(0.5, 0.75)));
-
-}
-
 void main() {
 
     #ifdef tsh_ORTHOGRAPHIC_PROJECTION
-        mat4 newGbufferProjectionInverse = mat4(
-            vec4(tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[0].x, 0.0, 0.0, 0.0),
-            vec4(0.0, tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[1].y, 0.0, 0.0),
-            vec4(0.0, 0.0, -384.0, 0.0),
-            vec4(0.0, 0.0, 0.0, 1.0)
-        );
-    #else
-        mat4 newGbufferProjectionInverse = gbufferProjectionInverse;
+        #define gbufferProjectionInverse mat4( \
+            vec4(tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[0].x, 0.0, 0.0, 0.0), \
+            vec4(0.0, tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[1].y, 0.0, 0.0), \
+            vec4(0.0, 0.0, -1024.0, 0.0), \
+            vec4(0.0, 0.0, 0.0, 1.0) \
+        )
     #endif
 
     vec4 screenPos = vec4(gl_FragCoord.xy / viewResolution, gl_FragCoord.z, 1.0);
     vec4 ndcPos = 2.0 * screenPos - 1.0;
-    vec4 viewPos = newGbufferProjectionInverse * ndcPos; viewPos /= viewPos.w;
+    vec4 viewPos = gbufferProjectionInverse * ndcPos; viewPos /= viewPos.w;
     vec4 playerPos = gbufferModelViewInverse * viewPos;
     vec4 scenePos = vec4(mat3(gbufferModelViewInverse) * viewPos.xyz, 1.0);
-
-    #ifdef tsh_ORTHOGRAPHIC_PROJECTION
-    {
-        float dither = (
-            bayer2(gl_FragCoord.xy)
-            + (1.0 / 4.0) * bayer2((1.0 / 2.0) * gl_FragCoord.xy)
-            + (1.0 / 16.0) * bayer2((1.0 / 4.0) * gl_FragCoord.xy)
-        );
-        dither += 0.5 / 64.0;
-        dither = 0.5 * dither + 0.5;
-        if(dot(viewPos.xy, viewPos.xy) < 4.0 * (1.0 - hideGUISmooth) * viewPos.z * dither * dither) {discard;}
-    }
-    #endif
 
     // ======== diffuse process ========
 
@@ -126,7 +105,7 @@ void main() {
     #ifdef tsh_VARYING_TextureCoord
         vec4 textureColor = texture(gtexture, v_TextureCoord);
         #if !defined tsh_PROGRAM_gbuffers_damagedblock
-            textureColor = tshf_ColorDecode(textureColor);
+            textureColor.rgb = color_SRGBEOTF(textureColor.rgb);
         #endif
         diffuse *= textureColor;
     #endif
@@ -134,18 +113,17 @@ void main() {
     #if defined tsh_PROGRAM_gbuffers_entities
         if(entityId == 16384) {diffuse = vec4(1.0);}
     #endif
-
+/*
     #if defined tsh_PROGRAM_gbuffers_textured_lit
         if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {
             diffuse.a *= smoothstep(128.0, 0.0, length(scenePos.xyz));
         }
     #endif
-
+*/
     if(diffuse.a < alphaTestRef) {discard;}
 
     #if defined tsh_PROGRAM_gbuffers_entities
-        vec4 entityColorDecoded = tshf_ColorDecode(entityColor);
-        diffuse.rgb = mix(diffuse.rgb, entityColorDecoded.rgb, entityColorDecoded.a);
+        diffuse.rgb = mix(diffuse.rgb, color_SRGBEOTF(entityColor.rgb), entityColor.a);
     #endif
 
     // ======== light process ========
@@ -155,20 +133,19 @@ void main() {
     #ifdef tsh_VARYING_LightmapCoord
 
         vec2 lightmapCoordSquare = v_LightmapCoord * v_LightmapCoord;
-        vec2 lighting = (1.0 - sqrt(tsh_MINIMUM_LIGHT_INTENSITY)) * lightmapCoordSquare + sqrt(tsh_MINIMUM_LIGHT_INTENSITY);
-        lighting = lighting * lighting - tsh_MINIMUM_LIGHT_INTENSITY;
+        vec2 lighting = (1.0 - sqrt(color_MINIMUM_LIGHT_INTENSITY)) * lightmapCoordSquare + sqrt(color_MINIMUM_LIGHT_INTENSITY);
+        lighting = lighting * lighting - color_MINIMUM_LIGHT_INTENSITY;
 
-        vec3 skyColorDecoded = tshf_ColorDecode(skyColor);
-        vec3 skyLight = sqrt(skyColorDecoded) + tsh_MINIMUM_SKY_LIGHT_COLOR;
+        vec3 skyLight = color_SRGBEOTF(sqrt(skyColor)) + color_MINIMUM_SKY_LIGHT_COLOR;
         skyLight *= lighting.y;
 
-        vec3 ambientLight = skyLight + tsh_MINIMUM_LIGHT_COLOR;
+        vec3 ambientLight = skyLight + color_MINIMUM_LIGHT_COLOR;
 
         #ifdef tsh_VARYING_AmbientShading
             ambientLight *= v_AmbientShading;
         #endif
 
-        vec3 blockLight = tsh_BLOCK_LIGHT_COLOR * lighting.x;
+        vec3 blockLight = color_BLOCK_LIGHT_COLOR * lighting.x;
 
         light = ambientLight + blockLight;
 
@@ -205,10 +182,10 @@ void main() {
         vec3 shadowLightDir = normalize(mat3(gbufferModelViewInverse) * shadowLightPosition);
         float dotLN = dot(shadowLightDir, v_Normal);
 
-        shadowLightColor *= exp(-tsh_ATMOSPHERE_DIFFUSE / max(shadowLightDir.y, 0.0));
+        shadowLightColor *= color_XYZ_TO_P3 * color_BT2020_TO_XYZ * exp(-color_ATMOSPHERE_DIFFUSE / max(shadowLightDir.y, 0.0));
         shadowLightColor *= 1.0 - rainStrength;
         if(dot(gbufferModelView[1].xyz, sunPosition) < 0.0) {
-            shadowLightColor *= tsh_MINIMUM_SKY_LIGHT_COLOR * moonBrightness;
+            shadowLightColor *= color_MINIMUM_SKY_LIGHT_COLOR * moonBrightness;
         }
 
         #ifdef tsh_VARYING_BlockId
@@ -240,7 +217,7 @@ void main() {
     #endif
 
     #if defined tsh_PROGRAM_gbuffers_textured_lit
-        if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {light = vec3(1.0);}
+        //if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {light = vec3(1.0);}
     #endif
 
     #if defined tsh_PROGRAM_gbuffers_entities
@@ -278,8 +255,7 @@ void main() {
     #elif defined tsh_PROGRAM_gbuffers_damagedblock
         color.a *= 1.0 - fogDensity;
     #else
-        vec4 fogColorDecoded = tshf_ColorDecode(vec4(fogColor, fogDensity));
-        color.rgb = mix(color.rgb, fogColorDecoded.rgb, fogColorDecoded.a);
+        color.rgb = mix(color.rgb, color_SRGBEOTF(fogColor), fogDensity);
     #endif
 
     // ======== write values to output variables ========

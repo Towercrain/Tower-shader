@@ -15,6 +15,7 @@ uniform mat4 projectionMatrix;
 
 // ======== constant and function ========
 
+#include "/lib/color.glsl"
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 

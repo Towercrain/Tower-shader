@@ -1,6 +1,3 @@
-option.tsh_SHADERS_INFORMATION = Tower Shader (제작
-value.tsh_SHADERS_INFORMATION.0 = Towercrain)
-
 option.sunPathRotation = 궤도 기울기
 option.sunPathRotation.comment = 해와 달, 별의 궤도를 기울입니다. 값이 0보다 작을 경우, 북반구에서 보이는 궤도를 나타냅니다.
 
@@ -12,3 +9,35 @@ option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = 직교 투영 모드에서 보�
 
 option.tsh_FAST_SHADOWS = 빠른 그림자
 option.tsh_FAST_SHADOWS.comment = 일부 개체의 그림자 렌더를 비활성화해 계산 속도를 높입니다. 동물, 상자, 표지판 등이 많은 장소에 있을 때 발생하는 성능 저하를 완화하지만, 일부 개체에 의한 그림자가 표시되지 않습니다.
+
+value.tsh_SHADOW_DISTANCE.32.0 = 2청크
+value.tsh_SHADOW_DISTANCE.48.0 = 3청크
+value.tsh_SHADOW_DISTANCE.64.0 = 4청크
+value.tsh_SHADOW_DISTANCE.80.0 = 5청크
+value.tsh_SHADOW_DISTANCE.96.0 = 6청크
+value.tsh_SHADOW_DISTANCE.112.0 = 7청크
+value.tsh_SHADOW_DISTANCE.128.0 = 8청크
+value.tsh_SHADOW_DISTANCE.144.0 = 9청크
+value.tsh_SHADOW_DISTANCE.160.0 = 10청크
+value.tsh_SHADOW_DISTANCE.176.0 = 11청크
+value.tsh_SHADOW_DISTANCE.192.0 = 12청크
+value.tsh_SHADOW_DISTANCE.208.0 = 13청크
+value.tsh_SHADOW_DISTANCE.224.0 = 14청크
+value.tsh_SHADOW_DISTANCE.240.0 = 15청크
+value.tsh_SHADOW_DISTANCE.256.0 = 16청크
+value.tsh_SHADOW_DISTANCE.272.0 = 17청크
+value.tsh_SHADOW_DISTANCE.288.0 = 18청크
+value.tsh_SHADOW_DISTANCE.304.0 = 19청크
+value.tsh_SHADOW_DISTANCE.320.0 = 20청크
+value.tsh_SHADOW_DISTANCE.336.0 = 21청크
+value.tsh_SHADOW_DISTANCE.352.0 = 22청크
+value.tsh_SHADOW_DISTANCE.368.0 = 23청크
+value.tsh_SHADOW_DISTANCE.384.0 = 24청크
+value.tsh_SHADOW_DISTANCE.400.0 = 25청크
+value.tsh_SHADOW_DISTANCE.416.0 = 26청크
+value.tsh_SHADOW_DISTANCE.432.0 = 27청크
+value.tsh_SHADOW_DISTANCE.448.0 = 28청크
+value.tsh_SHADOW_DISTANCE.464.0 = 29청크
+value.tsh_SHADOW_DISTANCE.480.0 = 30청크
+value.tsh_SHADOW_DISTANCE.496.0 = 31청크
+value.tsh_SHADOW_DISTANCE.512.0 = 32청크

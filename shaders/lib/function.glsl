@@ -23,7 +23,7 @@ float tshf_SoftSign(float x, float bias) {
 
 }
 
-// ======== additive subrandom ========
+// ======== hashing noise ========
 
 vec4 tshf_Noise(vec4 seed) {
 
@@ -60,30 +60,6 @@ vec4 tshf_Noise(vec4 seed) {
     const vec4 twist = 1024.0 * vec4( 17.9372511447, 73.0893577486, 51.7678136984, 43.4480503234);
     const vec4 warp = 1024.0 * vec4(77.4258539818, 53.963230926, 52.2459110524, 18.8120883769);
     return fract(cos(twist * seed + warp) * 4627.88359419);
-
-}
-
-// ======== color encode and color decode ========
-
-vec3 tshf_ColorDecode(vec3 color) {
-
-    return pow(color, vec3(tsh_DECODE_GAMMA));
-
-} vec4 tshf_ColorDecode(vec4 color) {
-
-    return vec4(pow(color.rgb, vec3(tsh_DECODE_GAMMA)), color.a);
-
-}
-
-vec3 tshf_ColorEncode(vec3 color) {
-
-    color = clamp(color, 0.0, 1.0);
-    return pow(color, vec3(1.0 / tsh_ENCODE_GAMMA));
-
-} vec4 tshf_ColorEncode(vec4 color) {
-
-    color = clamp(color, 0.0, 1.0);
-    return vec4(pow(color.rgb, vec3(1.0 / tsh_ENCODE_GAMMA)), color.a);
 
 }
 
@@ -130,15 +106,5 @@ float tshf_CalcProjDepth(mat4 projectionMatrix, float linearDepth) {
 float tshf_CalcLinearDepth(mat4 projectionMatrix, float depth) {
 
     return -projectionMatrix[3].z / (2.0 * depth - 1.0 + projectionMatrix[2].z);
-
-}
-
-// ======== color process ========
-
-vec3 tshf_TowerShaderToneMap(vec3 color) {
-
-    color = max(color, 0.0);
-
-    return 1.0 - 1.0 / (((color + 1.0) * color + 1.0) * color + 1.0);
 
 }

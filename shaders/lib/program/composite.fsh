@@ -24,25 +24,15 @@ uniform sampler2D colortex0;
 
 // ======== constant and function ========
 
+#include "/lib/color.glsl"
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 
 const bool colortex1Clear = false;
 
-const mat3 sRGBToNLMS = mat3(
-    vec3(0.2647600, 0.0921753, 0.0177566),
-    vec3(0.6739890, 0.8103780, 0.1094680),
-    vec3(0.0612508, 0.0974469, 0.8727750)
-);
-const mat3 nLMSToSRGB = mat3(
-    vec3( 5.312930, -0.600369, -0.0327901),
-    vec3(-4.435280,  1.754080, -0.1297700),
-    vec3( 0.122349, -0.153713,  1.1625600)
-);
-
 float calcExposure(float brightness) {
 
-    return 0.25 / (brightness + mix(tsh_NIGHT_VISION_INTENSITY, tsh_MINIMUM_LIGHT_INTENSITY, nightVision));
+    return 0.25 / (brightness + mix(color_NIGHT_VISION_INTENSITY, color_MINIMUM_LIGHT_INTENSITY, nightVision));
 
 }
 
@@ -58,15 +48,28 @@ float calcVignette(vec2 pos) {
 void main() {
 
     vec4 color = texture(colortex0, texCoord);
+/*
+    vec2 uv = (gl_FragCoord.xy - 0.5 * viewResolution) * (1.0 / 512.0) + 0.5;
 
+    color = vec4(
+        exp(4.0 * (2.0 * uv.y - 1.0))
+        * clamp(vec3(
+            abs(6.0 * fract(uv.x) - 3.0) - 1.0,
+            2.0 - abs(6.0 * fract(uv.x) - 2.0),
+            2.0 - abs(6.0 * fract(uv.x) - 4.0)
+        ), 0.0, 1.0),
+        1.0
+    );
+    color.rgb = color_SRGBEOTF(color.rgb);
+*/
     float exposure = calcExposure(brightness);
     float vignette = calcVignette(texCoord);
 
     color.rgb *= exposure * vignette;
 
-    color.rgb = sRGBToNLMS * color.rgb;
-    color.rgb = tshf_TowerShaderToneMap(color.rgb);
-    color.rgb = nLMSToSRGB * color.rgb;
+    color.rgb = color_XYZ_TO_LMS * color_P3_TO_XYZ * color.rgb;
+    color.rgb = (0.32903 / 0.35825) * color_TowerShaderToneMap(color.rgb * (0.35825 / 0.32903));
+    color.rgb = color_XYZ_TO_P3 * color_LMS_TO_XYZ * color.rgb;
 
     // ======== write values to output variables ========
 

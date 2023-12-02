@@ -23,13 +23,15 @@ uniform sampler2D shadowtex1;
 
 // ======== constant and function ========
 
+#include "/lib/color.glsl"
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 
 #include "/lib/module/shadow.glsl"
 
-const int shadowMapResolution = 2048;
-const float shadowDistance = 160.0;
+const int shadowMapResolution = tsh_SHADOW_MAP_RESOLUTION;
+const float shadowDistance = tsh_SHADOW_DISTANCE;
+const float shadowDistanceRenderMul = 1.0;
 
 void main() {
 
@@ -39,7 +41,7 @@ void main() {
 
     if(color.a < alphaTestRef) {discard;}
 
-    color = tshf_ColorDecode(color);
+    color.rgb = color_SRGBEOTF(color.rgb);
 
     color = shadow_CalcShadowColor(color);
 

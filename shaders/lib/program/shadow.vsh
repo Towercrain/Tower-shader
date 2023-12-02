@@ -25,6 +25,7 @@ uniform mat4 projectionMatrix;
 
 // ======== constant and function ========
 
+#include "/lib/color.glsl"
 #include "/lib/constant.glsl"
 #include "/lib/function.glsl"
 
@@ -40,7 +41,7 @@ void main() {
     // ======== write values to output variables ========
 
     texCoord = (textureMatrix * vec4(vaUV0, 0.0, 1.0)).xy;
-    vertexColor = vaColor;
+    vertexColor = vec4(color_SRGBEOTF(vaColor.rgb), vaColor.a);
 
     gl_Position = clipPos;
 

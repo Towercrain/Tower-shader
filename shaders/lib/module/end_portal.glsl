@@ -60,7 +60,7 @@ vec4 endPortal_CalcPortalColor(sampler2D portalTexture, vec2 uv) {
                 (coord * endPortal_CalcPortalLayerMatrix(float(i + 1), vaGameTime)).xy
             ).rgb * endPortal_COLORS[i];
     }
-    color = tshf_ColorDecode(color);
+    color = color_SRGBEOTF(color);
     return vec4(color, 1.0);
 
 }

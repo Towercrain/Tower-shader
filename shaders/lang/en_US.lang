@@ -1,6 +1,3 @@
-option.tsh_SHADERS_INFORMATION = Tower Shader (made by
-value.tsh_SHADERS_INFORMATION.0 = Towercrain)
-
 option.sunPathRotation = Sun Path Rotation
 option.sunPathRotation.comment = rotates sun, moon and stars
 
