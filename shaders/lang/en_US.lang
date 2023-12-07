@@ -1,11 +1,53 @@
 option.sunPathRotation = Sun Path Rotation
-option.sunPathRotation.comment = rotates sun, moon and stars
+option.sunPathRotation.comment = Tilts The celestial sphere.
 
-option.tsh_ORTHOGRAPHIC_PROJECTION = Orthographic Projection
-option.tsh_ORTHOGRAPHIC_PROJECTION.comment = Change the projection mode to orthographic projection. This mode may display too much information (like X-ray or minimap mods) for normal gameplay.
 
-option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = Orthographic View Distance
-option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = Set viewing area on orthographic projection mode. The view distance is affected by FOV effects (bow, spyglass, FOV settings, etc).
 
 option.tsh_FAST_SHADOWS = Fast Shadows
-option.tsh_FAST_SHADOWS.comment = Disable shadows for some blocks/entities for less overhead.
+option.tsh_FAST_SHADOWS.comment = Disable shadows for entities and block entities to faster shadow calculation.
+
+option.tsh_SHADOW_DISTANCE = Shadow Render Distance
+option.tsh_SHADOW_DISTANCE.comment = Recommend to set equal to render distance.
+value.tsh_SHADOW_DISTANCE.32.0 = 2 chunks
+value.tsh_SHADOW_DISTANCE.48.0 = 3 chunks
+value.tsh_SHADOW_DISTANCE.64.0 = 4 chunks
+value.tsh_SHADOW_DISTANCE.80.0 = 5 chunks
+value.tsh_SHADOW_DISTANCE.96.0 = 6 chunks
+value.tsh_SHADOW_DISTANCE.112.0 = 7 chunks
+value.tsh_SHADOW_DISTANCE.128.0 = 8 chunks
+value.tsh_SHADOW_DISTANCE.144.0 = 9 chunks
+value.tsh_SHADOW_DISTANCE.160.0 = 10 chunks
+value.tsh_SHADOW_DISTANCE.176.0 = 11 chunks
+value.tsh_SHADOW_DISTANCE.192.0 = 12 chunks
+value.tsh_SHADOW_DISTANCE.208.0 = 13 chunks
+value.tsh_SHADOW_DISTANCE.224.0 = 14 chunks
+value.tsh_SHADOW_DISTANCE.240.0 = 15 chunks
+value.tsh_SHADOW_DISTANCE.256.0 = 16 chunks
+value.tsh_SHADOW_DISTANCE.272.0 = 17 chunks
+value.tsh_SHADOW_DISTANCE.288.0 = 18 chunks
+value.tsh_SHADOW_DISTANCE.304.0 = 19 chunks
+value.tsh_SHADOW_DISTANCE.320.0 = 20 chunks
+value.tsh_SHADOW_DISTANCE.336.0 = 21 chunks
+value.tsh_SHADOW_DISTANCE.352.0 = 22 chunks
+value.tsh_SHADOW_DISTANCE.368.0 = 23 chunks
+value.tsh_SHADOW_DISTANCE.384.0 = 24 chunks
+value.tsh_SHADOW_DISTANCE.400.0 = 25 chunks
+value.tsh_SHADOW_DISTANCE.416.0 = 26 chunks
+value.tsh_SHADOW_DISTANCE.432.0 = 27 chunks
+value.tsh_SHADOW_DISTANCE.448.0 = 28 chunks
+value.tsh_SHADOW_DISTANCE.464.0 = 29 chunks
+value.tsh_SHADOW_DISTANCE.480.0 = 30 chunks
+value.tsh_SHADOW_DISTANCE.496.0 = 31 chunks
+value.tsh_SHADOW_DISTANCE.512.0 = 32 chunks
+
+option.tsh_SHADOW_DISTORTION = Fix Display Entity Shadows
+value.tsh_SHADOW_DISTORTION.0.0 = ON
+value.tsh_SHADOW_DISTORTION.6.0 = OFF
+
+
+
+option.tsh_ORTHOGRAPHIC_PROJECTION = Orthographic Projection
+option.tsh_ORTHOGRAPHIC_PROJECTION.comment = Change the projection mode to orthographic projection.
+
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = Orthographic View Distance
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = Set viewing area on orthographic projection mode.

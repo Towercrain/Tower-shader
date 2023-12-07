@@ -1,7 +1,7 @@
 # Tower shader
 
 자작 마인크래프트 셰이더 팩  
-버전 : 1.3
+버전 : 1.3.1
 
 ## 특징
 - 저사양과 현실성을 지향하는 셰이더
@@ -10,7 +10,16 @@
 - auto exposure (자동 노출 조정)
 - LMS 공간에서 처리되는 톤 매핑
 - 고급 질감 표현이 없음 (PBR 리소스팩 미지원)
-- Geforce GTX 660 이상의 GPU에서 40FPS 이상의 프레임률을 안정적으로 유지함 (v1.2.4 이전의 모든 버전에서 테스트 됨)
+
+### 테스트 환경
+
+|             |  \| |  version < 1.2.4 |    version > 1.3 |
+| :---------: | :-: | :--------------: | :--------------: |
+|         CPU |  \| |        i5 - 3550 |     i5 - 13600KF |
+|         GPU |  \| |  Geforce GTX 660 | Geforce RTX 4060 |
+|         RAM |  \| |      DDR3 4+4 GB |    DDR5 16+16 GB |
+|  ShadersMod |  \| |         Optifine | Iris Shaders Mod |
+| Performance |  \| | stable at 40 FPS |        작성 예정 |
 
 ## 업데이트 기록
 
@@ -32,6 +41,5 @@
 
 ## todo
 
-- Iris Shaders 모드 지원을 위해 GLSL 버전 변경하기 (330 core -> 330 compatibility)
-- Tower shader 전용 언어와 컴파일러 제작하기
+- Iris Shaders 모드에서의 정상 구동을 위해, GLSL 버전 변경하기 (330 core -> 330 compatibility)
 - 직교투영 개선하기

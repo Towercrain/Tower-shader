@@ -1,15 +1,13 @@
 option.sunPathRotation = 궤도 기울기
-option.sunPathRotation.comment = 해와 달, 별의 궤도를 기울입니다. 값이 0보다 작을 경우, 북반구에서 보이는 궤도를 나타냅니다.
+option.sunPathRotation.comment = 해와 달, 별의 궤도를 기울입니다.
 
-option.tsh_ORTHOGRAPHIC_PROJECTION = 직교 투영
-option.tsh_ORTHOGRAPHIC_PROJECTION.comment = 투영 모드를 직교 투영으로 변경합니다. 구조적 문제로 인해 X레이 효과가 동반되며, 과도한 정보를 노출시킬 수 있습니다.
 
-option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = 직교 투영 시야 거리
-option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = 직교 투영 모드에서 보이는 범위를 제어합니다. 시야 효과(활, 망원경, 시야 범위 등)에 영향을 받습니다.
 
 option.tsh_FAST_SHADOWS = 빠른 그림자
-option.tsh_FAST_SHADOWS.comment = 일부 개체의 그림자 렌더를 비활성화해 계산 속도를 높입니다. 동물, 상자, 표지판 등이 많은 장소에 있을 때 발생하는 성능 저하를 완화하지만, 일부 개체에 의한 그림자가 표시되지 않습니다.
+option.tsh_FAST_SHADOWS.comment = 일부 개체의 그림자 렌더를 비활성화해 계산 속도를 높입니다.
 
+option.tsh_SHADOW_DISTANCE = 그림자 렌더 거리
+option.tsh_SHADOW_DISTANCE.comment = 지형 렌더 거리와 동일하게 설정하는 것을 권장합니다.
 value.tsh_SHADOW_DISTANCE.32.0 = 2청크
 value.tsh_SHADOW_DISTANCE.48.0 = 3청크
 value.tsh_SHADOW_DISTANCE.64.0 = 4청크
@@ -41,3 +39,15 @@ value.tsh_SHADOW_DISTANCE.464.0 = 29청크
 value.tsh_SHADOW_DISTANCE.480.0 = 30청크
 value.tsh_SHADOW_DISTANCE.496.0 = 31청크
 value.tsh_SHADOW_DISTANCE.512.0 = 32청크
+
+option.tsh_SHADOW_DISTORTION = 디스플레이 엔티티 그림자 고치기
+value.tsh_SHADOW_DISTORTION.0.0 = 켜짐
+value.tsh_SHADOW_DISTORTION.6.0 = 꺼짐
+
+
+
+option.tsh_ORTHOGRAPHIC_PROJECTION = 직교 투영
+option.tsh_ORTHOGRAPHIC_PROJECTION.comment = 투영 모드를 직교 투영으로 변경합니다.
+
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = 직교 투영 시야 거리
+option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = 직교 투영 모드에서 보이는 거리를 설정합니다.
