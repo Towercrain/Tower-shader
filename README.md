@@ -13,13 +13,13 @@
 
 ### 테스트 환경
 
-|             |  \| |  version < 1.2.4 |    version > 1.3 |
-| :---------: | :-: | :--------------: | :--------------: |
-|         CPU |  \| |        i5 - 3550 |     i5 - 13600KF |
-|         GPU |  \| |  Geforce GTX 660 | Geforce RTX 4060 |
-|         RAM |  \| |      DDR3 4+4 GB |    DDR5 16+16 GB |
-|  ShadersMod |  \| |         Optifine | Iris Shaders Mod |
-| Performance |  \| | stable at 40 FPS |        작성 예정 |
+|             |  \| |  version < 1.2.4 |     version > 1.3 |
+| :---------: | :-: | :--------------: |  :--------------: |
+|         CPU |  \| |        i5 - 3550 |      i5 - 13600KF |
+|         GPU |  \| |  Geforce GTX 660 |  Geforce RTX 4060 |
+|         RAM |  \| |      DDR3 4+4 GB |     DDR5 16+16 GB |
+|  ShadersMod |  \| |         Optifine |  Iris Shaders Mod |
+| Performance |  \| | stable at 40 FPS | stable at 200 FPS |
 
 ## 업데이트 기록
 
