@@ -23,9 +23,6 @@ out vec4 v_VertexColor;
 #ifdef tsh_VARYING_LightmapCoord
     out vec2 v_LightmapCoord;
 #endif
-#ifdef tsh_VARYING_AmbientShading
-    out float v_AmbientShading;
-#endif
 #ifdef tsh_VARYING_Normal
     out vec3 v_Normal;
 #endif
@@ -72,11 +69,7 @@ void main() {
     vec3 worldNorm = mat3(gbufferModelViewInverse) * viewNorm;
     vec4 modelPos = vec4(vaPosition, 1.0);
 
-    float ambientShading = tshf_CalcAmbientLight(worldNorm);
-
     #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
-        vertexColor.a = 1.0;
-        ambientShading *= vaColor.a;
         modelPos.xyz += chunkOffset;
     #endif
 
@@ -99,10 +92,6 @@ void main() {
     #ifdef tsh_VARYING_LightmapCoord
         //v_LightmapCoord = (1.0 / 256.0) * vaUV2 + (0.5 / 16.0);
         v_LightmapCoord = clamp((1.0 / 240.0) * vaUV2, 0.0, 1.0);
-    #endif
-
-    #ifdef tsh_VARYING_AmbientShading
-        v_AmbientShading = ambientShading;
     #endif
 
     #ifdef tsh_VARYING_Normal

@@ -14,9 +14,6 @@ in vec4 v_VertexColor;
 #ifdef tsh_VARYING_LightmapCoord
     in vec2 v_LightmapCoord;
 #endif
-#ifdef tsh_VARYING_AmbientShading
-    in float v_AmbientShading;
-#endif
 #ifdef tsh_VARYING_Normal
     in vec3 v_Normal;
 #endif
@@ -100,7 +97,13 @@ void main() {
 
     // ======== diffuse process ========
 
-    vec4 diffuse = v_VertexColor;
+    vec4 diffuse;
+    
+    #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
+        diffuse = vec4(v_VertexColor.rgb, 1.0);
+    #else
+        diffuse = v_VertexColor;
+    #endif
 
     #ifdef tsh_VARYING_TextureCoord
         vec4 textureColor = texture(gtexture, v_TextureCoord);
@@ -142,7 +145,11 @@ void main() {
         vec3 ambientLight = skyLight + color_MINIMUM_LIGHT_COLOR;
 
         #ifdef tsh_VARYING_AmbientShading
-            ambientLight *= v_AmbientShading;
+            ambientLight *= tshf_CalcAmbientLight(v_Normal);
+        #endif
+
+        #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
+            ambientLight *= v_VertexColor.a;
         #endif
 
         vec3 blockLight = color_BLOCK_LIGHT_COLOR * lighting.x;
