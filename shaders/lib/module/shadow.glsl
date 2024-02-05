@@ -2,8 +2,8 @@
 //uniform vec3 sunPosition;
 //uniform mat4 shadowModelView;
 //uniform mat4 shadowProjection;
-//uniform sampler2DShadow shadowtex0;
-//uniform sampler2DShadow shadowtex1;
+//uniform sampler2D shadowtex0;
+//uniform sampler2D shadowtex1;
 //uniform sampler2D shadowcolor0;
 
 float shadow_CalcShadowDistortion(vec2 shadowClipPos) {
@@ -80,30 +80,23 @@ vec3 shadow_CalcShadowLight(vec4 shadowClipPos) {
 
     vec2 shadowTexOffset = vec2(1.0 / tsh_SHADOW_MAP_RESOLUTION, 0.0);
 
-    mat4x3 shadowTexCoord = mat4x3(
-        shadowScreenPos.xyz + shadowTexOffset.xyy,
-        shadowScreenPos.xyz - shadowTexOffset.xyy,
-        shadowScreenPos.xyz + shadowTexOffset.yxy,
-        shadowScreenPos.xyz - shadowTexOffset.yxy
-    );
-
     vec4 shadowMapDepth0 = vec4(
-        texture(shadowtex0, shadowTexCoord[0]),
-        texture(shadowtex0, shadowTexCoord[1]),
-        texture(shadowtex0, shadowTexCoord[2]),
-        texture(shadowtex0, shadowTexCoord[3])
+        texelFetch(shadowtex0, shadowTexelCoord + ivec2(-1,  0), 0).x,
+        texelFetch(shadowtex0, shadowTexelCoord + ivec2( 1,  0), 0).x,
+        texelFetch(shadowtex0, shadowTexelCoord + ivec2( 0, -1), 0).x,
+        texelFetch(shadowtex0, shadowTexelCoord + ivec2( 0,  1), 0).x
     );
     vec4 shadowMapDepth1 = vec4(
-        texture(shadowtex1, shadowTexCoord[0]),
-        texture(shadowtex1, shadowTexCoord[1]),
-        texture(shadowtex1, shadowTexCoord[2]),
-        texture(shadowtex1, shadowTexCoord[3])
+        texelFetch(shadowtex1, shadowTexelCoord + ivec2(-1,  0), 0).x,
+        texelFetch(shadowtex1, shadowTexelCoord + ivec2( 1,  0), 0).x,
+        texelFetch(shadowtex1, shadowTexelCoord + ivec2( 0, -1), 0).x,
+        texelFetch(shadowtex1, shadowTexelCoord + ivec2( 0,  1), 0).x
     );
     mat4x3 shadowMapColor = mat4x3(
-        texture(shadowcolor0, shadowTexCoord[0].xy).rgb,
-        texture(shadowcolor0, shadowTexCoord[1].xy).rgb,
-        texture(shadowcolor0, shadowTexCoord[2].xy).rgb,
-        texture(shadowcolor0, shadowTexCoord[3].xy).rgb
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2(-1,  0), 0).rgb,
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 1,  0), 0).rgb,
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 0, -1), 0).rgb,
+        texelFetch(shadowcolor0, shadowTexelCoord + ivec2( 0,  1), 0).rgb
     );
 
     vec4 shadowMask0 = vec4(lessThan(vec4(shadowScreenPos.z), shadowMapDepth0));

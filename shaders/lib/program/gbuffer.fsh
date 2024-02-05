@@ -60,8 +60,8 @@ uniform sampler2D gtexture;
 //uniform sampler2D lightmap;
 
 #if defined tsh_USE_SHADOW
-    uniform sampler2DShadow shadowtex0;
-    uniform sampler2DShadow shadowtex1;
+    uniform sampler2D shadowtex0;
+    uniform sampler2D shadowtex1;
     uniform sampler2D shadowcolor0;
 #endif
 
@@ -81,7 +81,6 @@ uniform sampler2D gtexture;
 
 void main() {
 
-    // ================ 0 ================
 
     #ifdef tsh_ORTHOGRAPHIC_PROJECTION
         #define gbufferProjectionInverse mat4( \
@@ -126,11 +125,13 @@ void main() {
 
     } // vec4 diffuse;
 
+
     if(diffuse.a < alphaTestRef) {discard;}
 
     #if !(defined tsh_PROGRAM_gbuffers_skybasic || defined tsh_PROGRAM_gbuffers_skytextured)
         //diffuse.rgb = vec3(1.0); // whiteworld
     #endif
+
 
     vec3 sunLightColor; {
 
@@ -256,8 +257,6 @@ void main() {
     } // vec3 light;
 
 
-    // ======== color process ========
-
     vec4 color;{
 
         float fogDensity; {
@@ -304,6 +303,7 @@ void main() {
         #endif
 
     } // vec4 color;
+
 
     // ======== write values to output variables ========
 
