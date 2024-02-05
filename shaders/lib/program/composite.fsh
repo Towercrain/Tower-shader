@@ -32,16 +32,7 @@ const bool colortex1Clear = false;
 
 float calcExposure(float brightness) {
 
-    return 0.25 / (brightness + mix(color_NIGHT_VISION_INTENSITY, color_MINIMUM_LIGHT_INTENSITY, nightVision));
-
-}
-
-float calcVignette(vec2 pos) {
-
-    vec2 a = pos - pos * pos;
-    float vignette = (45.0 / 17.0) * (a.x * a.y + 0.35);
-
-    return vignette;
+    return 0.25 / (brightness + 2.0 * mix((1.0 / color_SUN_LUMINANCE), exp2(-8), nightVision));
 
 }
 
@@ -61,19 +52,21 @@ void main() {
         1.0
     );
     color.rgb = color_SRGBEOTF(color.rgb);
+    color.rgb = max(color.rgb, 0.0);
 */
-    float exposure = calcExposure(brightness);
-    float vignette = calcVignette(texCoord);
-
-    color.rgb *= exposure * vignette;
 
     color.rgb = color_XYZ_TO_LMS * color_P3_TO_XYZ * color.rgb;
-    color.rgb = (0.32903 / 0.35825) * color_TowerShaderToneMap(color.rgb * (0.35825 / 0.32903));
+
+    color.rgb *= calcExposure(brightness);
+    color.rgb = color_TowerShaderToneMap(color.rgb);
+
     color.rgb = color_XYZ_TO_P3 * color_LMS_TO_XYZ * color.rgb;
 
     // ======== write values to output variables ========
 
     outColor0 = color;
-    outColor1 = vec4(brightness, 0.0, 0.0, 1.0);
+    if(gl_FragCoord.xy == vec2(0.5, 0.5)) {
+        outColor1 = vec4(brightness, 0.0, 0.0, 1.0);
+    }
 
 }

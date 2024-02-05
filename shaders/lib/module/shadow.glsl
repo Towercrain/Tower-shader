@@ -59,14 +59,14 @@ bool shadow_CalcShadowClip(vec4 shadowClipPos) {
 
 #if defined tsh_PROGRAM_fsh && defined tsh_PROGRAM_gbuffers
 
-vec3 shadow_CalcShadowOffset(vec4 shadowClipPos, vec3 normal, bool flip) {
+vec3 shadow_CalcShadowOffset(vec4 shadowClipPos, vec3 normal) {
 
     const float texelSize = 2.0 * tsh_SHADOW_DISTANCE / tsh_SHADOW_MAP_RESOLUTION;
 
     float gradient = shadow_CalcDistortionGradient(shadowClipPos.xy);
     vec3 shadowViewNorm = mat3(shadowModelView) * normal;
     vec3 shadowPosOffset = mat3(shadowProjection) * shadowViewNorm * texelSize / gradient;
-    if(flip) {shadowPosOffset *= tshf_SoftSign(shadowViewNorm.z + 0.01, 0.01);}
+    shadowPosOffset *= sign(shadowViewNorm.z);
 
     return shadowPosOffset;
 

@@ -28,6 +28,7 @@ out vec4 outColor0;
 
 // ======== uniform ========
 
+uniform int isEyeInWater;
 uniform int fogShape;
 uniform int entityId;
 uniform int blockEntityId;
@@ -80,6 +81,8 @@ uniform sampler2D gtexture;
 
 void main() {
 
+    // ================ 0 ================
+
     #ifdef tsh_ORTHOGRAPHIC_PROJECTION
         #define gbufferProjectionInverse mat4( \
             vec4(tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[0].x, 0.0, 0.0, 0.0), \
@@ -95,175 +98,212 @@ void main() {
     vec4 playerPos = gbufferModelViewInverse * viewPos;
     vec4 scenePos = vec4(mat3(gbufferModelViewInverse) * viewPos.xyz, 1.0);
 
-    // ======== diffuse process ========
 
-    vec4 diffuse;
-    
-    #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
-        diffuse = vec4(v_VertexColor.rgb, 1.0);
-    #else
-        diffuse = v_VertexColor;
-    #endif
-
-    #ifdef tsh_VARYING_TextureCoord
-        vec4 textureColor = texture(gtexture, v_TextureCoord);
-        #if !defined tsh_PROGRAM_gbuffers_damagedblock
-            textureColor.rgb = color_SRGBEOTF(textureColor.rgb);
-        #endif
-        diffuse *= textureColor;
-    #endif
-
-    #if defined tsh_PROGRAM_gbuffers_entities
-        if(entityId == 16384) {diffuse = vec4(1.0);}
-    #endif
-/*
-    #if defined tsh_PROGRAM_gbuffers_textured_lit
-        if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {
-            diffuse.a *= smoothstep(128.0, 0.0, length(scenePos.xyz));
-        }
-    #endif
-*/
-    if(diffuse.a < alphaTestRef) {discard;}
-
-    #if defined tsh_PROGRAM_gbuffers_entities
-        diffuse.rgb = mix(diffuse.rgb, color_SRGBEOTF(entityColor.rgb), entityColor.a);
-    #endif
-
-    // ======== light process ========
-
-    vec3 light = vec3(1.0);
-
-    #ifdef tsh_VARYING_LightmapCoord
-
-        vec2 lightmapCoordSquare = v_LightmapCoord * v_LightmapCoord;
-        vec2 lighting = (1.0 - sqrt(color_MINIMUM_LIGHT_INTENSITY)) * lightmapCoordSquare + sqrt(color_MINIMUM_LIGHT_INTENSITY);
-        lighting = lighting * lighting - color_MINIMUM_LIGHT_INTENSITY;
-
-        vec3 skyLight = color_SRGBEOTF(sqrt(skyColor)) + color_MINIMUM_SKY_LIGHT_COLOR;
-        skyLight *= lighting.y;
-
-        vec3 ambientLight = skyLight + color_MINIMUM_LIGHT_COLOR;
-
-        #ifdef tsh_VARYING_AmbientShading
-            ambientLight *= tshf_CalcAmbientLight(v_Normal);
-        #endif
+    vec4 diffuse; {
 
         #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
-            ambientLight *= v_VertexColor.a;
-        #endif
-
-        vec3 blockLight = color_BLOCK_LIGHT_COLOR * lighting.x;
-
-        light = ambientLight + blockLight;
-
-    #endif
-
-    #if defined tsh_USE_SHADOW
-
-        // ==== get shadow clip position ====
-
-        vec4 shadowPlayerPos = playerPos;
-
-        #if (defined tsh_PROGRAM_gbuffers_hand || defined tsh_PROGRAM_gbuffers_hand_water) && !defined tsh_ORTHOGRAPHIC_PROJECTION
-            shadowPlayerPos.xyz *= 1.0 / MC_HAND_DEPTH;
-        #endif
-
-        #ifdef tsh_VARYING_BlockId
-            int blockIdInt = int(floor(v_BlockId));
-            bool flip = (blockIdInt == 16385);
+            diffuse = vec4(v_VertexColor.rgb, 1.0);
         #else
-            const bool flip = false;
+            diffuse = v_VertexColor;
         #endif
 
-        vec4 shadowClipPos = shadowProjection * shadowModelView * shadowPlayerPos;
-        shadowClipPos.xyz += 2.0 * shadow_CalcShadowOffset(shadowClipPos, v_Normal, flip);
-        shadowClipPos = shadow_DistortShadowClipPos(shadowClipPos);
+        #ifdef tsh_VARYING_TextureCoord
 
-        // ==== shadow light process ====
+            vec4 textureColor = texture(gtexture, v_TextureCoord);
 
-        vec3 shadowLightColor = shadow_CalcShadowLight(shadowClipPos);
+            #if !defined tsh_PROGRAM_gbuffers_damagedblock
+                textureColor.rgb = color_SRGBEOTF(textureColor.rgb);
+            #endif
 
-        bool shadowClip = shadow_CalcShadowClip(shadowClipPos);
-        if(shadowClip) {shadowLightColor = vec3(1.0);}
+            diffuse *= textureColor;
 
-        vec3 shadowLightDir = normalize(mat3(gbufferModelViewInverse) * shadowLightPosition);
-        float dotLN = dot(shadowLightDir, v_Normal);
-
-        shadowLightColor *= color_XYZ_TO_P3 * color_BT2020_TO_XYZ * exp(-color_ATMOSPHERE_DIFFUSE / max(shadowLightDir.y, 0.0));
-        shadowLightColor *= 1.0 - rainStrength;
-        if(dot(gbufferModelView[1].xyz, sunPosition) < 0.0) {
-            shadowLightColor *= color_MINIMUM_SKY_LIGHT_COLOR * moonBrightness;
-        }
-
-        #ifdef tsh_VARYING_BlockId
-            if(blockIdInt == 16385) {
-                //shadowLightColor *= 1.0;
-            } else if(blockIdInt == 16387) {
-                shadowLightColor = vec3(0.0);
-            } else {
-                shadowLightColor *= 2.0 * max(dotLN, 0.0);
-            }
-        #elif defined tsh_PROGRAM_gbuffers_clouds
-            //shadowLightColor *= 1.0;
-        #else
-            shadowLightColor *= 2.0 * max(dotLN, 0.0);
         #endif
 
-        #ifdef tsh_VARYING_LightmapCoord
-            shadowLightColor *= lightmapCoordSquare.y;
+        #if defined tsh_PROGRAM_gbuffers_entities
+            if(entityId == 16384) {diffuse = vec4(1.0);}
+            diffuse.rgb = mix(diffuse.rgb, color_SRGBEOTF(entityColor.rgb), entityColor.a);
         #endif
 
-        // ==== combining shadow light to light ====
+    } // vec4 diffuse;
 
-        light += shadowLightColor;
-
-    #endif
-
-    #if defined tsh_PROGRAM_gbuffers_skytextured
-        if(renderStage == MC_RENDER_STAGE_SUN) {light = vec3(16.0);}
-    #endif
-
-    #if defined tsh_PROGRAM_gbuffers_textured_lit
-        //if(renderStage == MC_RENDER_STAGE_WORLD_BORDER) {light = vec3(1.0);}
-    #endif
-
-    #if defined tsh_PROGRAM_gbuffers_entities
-        if(entityId == 16384) {light = vec3(1.0);}
-    #endif
-
-    // ======== combining diffuse and light to color ========
+    if(diffuse.a < alphaTestRef) {discard;}
 
     #if !(defined tsh_PROGRAM_gbuffers_skybasic || defined tsh_PROGRAM_gbuffers_skytextured)
-        //diffuse.rgb = vec3(1.0);
+        //diffuse.rgb = vec3(1.0); // whiteworld
     #endif
 
-    vec4 color = diffuse * vec4(light, 1.0);
+    vec3 sunLightColor; {
+
+        float sunHeight = dot(gbufferModelView[1].xyz, normalize(sunPosition));
+
+        sunLightColor = color_XYZ_TO_P3 * color_BT2020_TO_XYZ * exp(-color_ATMOSPHERE_DIFFUSE / abs(sunHeight));
+
+        sunLightColor *= 2.0;
+
+        if(sunHeight < 0.0) {
+            sunLightColor *= (1.0 / color_SUN_LUMINANCE) * moonBrightness; // moon light color
+        }
+
+        sunLightColor *= 1.0 - rainStrength;
+    } // vec3 sunLightColor;
+
+
+    vec3 light; {
+
+        light = vec3(1.0);
+
+        #ifdef tsh_VARYING_LightmapCoord
+
+            vec2 lighting = exp2(8.0 * v_LightmapCoord - 8.0) - (1.0 / 256.0);
+
+            vec3 skyLight = color_SRGBEOTF(skyColor);
+            skyLight = 0.5 * skyLight + 0.25 * sunLightColor;
+            skyLight *= lighting.y;
+
+            vec3 ambientLight = skyLight + color_MINIMUM_LIGHT_COLOR;
+
+            #ifdef tsh_VARYING_AmbientShading
+                ambientLight *= tshf_CalcAmbientLight(v_Normal);
+            #endif
+
+            #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
+                ambientLight *= v_VertexColor.a;
+            #endif
+
+            vec3 blockLight = color_BLOCK_LIGHT_COLOR * lighting.x;
+
+            light = ambientLight + blockLight;
+
+            light += nightVision * color_NIGHT_VISION_COLOR;
+
+        #endif
+
+        #if defined tsh_USE_SHADOW
+
+            vec3 shadowLightColor; {
+
+                vec3 shadowMask; {
+
+                    vec4 shadowClipPos; {
+
+                        vec4 shadowPlayerPos; {
+
+                            shadowPlayerPos = playerPos;
+                            #if (defined tsh_PROGRAM_gbuffers_hand || defined tsh_PROGRAM_gbuffers_hand_water) && !defined tsh_ORTHOGRAPHIC_PROJECTION
+                                shadowPlayerPos.xyz *= 1.0 / MC_HAND_DEPTH;
+                            #endif
+
+                        } // vec4 shadowPlayerPos;
+
+                        shadowClipPos = shadowProjection * shadowModelView * shadowPlayerPos;
+                        shadowClipPos.xyz += 2.0 * shadow_CalcShadowOffset(shadowClipPos, v_Normal);
+                        shadowClipPos = shadow_DistortShadowClipPos(shadowClipPos);
+
+                    } // vec4 shadowClipPos;
+
+                    if(shadow_CalcShadowClip(shadowClipPos)) { // if shadow clipped
+                        shadowMask = vec3(0.25);
+                    } else {
+                        shadowMask = shadow_CalcShadowLight(shadowClipPos);
+                    }
+
+                } // vec3 shadowMask;
+
+                float normalLight; {
+                    
+                    float dotLN; {
+
+                        vec3 shadowLightDir = normalize(mat3(gbufferModelViewInverse) * shadowLightPosition);
+                        dotLN = dot(shadowLightDir, v_Normal);
+
+                    } // float dotLN;
+
+                    #ifdef tsh_VARYING_BlockId
+                        int blockIdInt = int(floor(v_BlockId));
+                        if(blockIdInt == 16385) {
+                            normalLight = 0.5 * abs(dotLN);
+                        } else if(blockIdInt == 16387) {
+                            normalLight = 0.0;
+                        } else {
+                            normalLight = max(dotLN, 0.0);
+                        }
+                    #elif defined tsh_PROGRAM_gbuffers_clouds
+                        normalLight = 0.25;
+                    #else
+                        normalLight = max(dotLN, 0.0);
+                    #endif
+
+                } // float normalLight;
+
+                shadowLightColor = sunLightColor * normalLight * shadowMask;
+
+                #ifdef tsh_VARYING_LightmapCoord
+                    shadowLightColor *= lighting.y;
+                #endif
+
+            } // vec3 shadowLightColor;
+
+            light += shadowLightColor;
+
+        #endif
+
+        #if defined tsh_PROGRAM_gbuffers_entities
+
+            if(entityId == 16384) {light = vec3(1.0);}
+
+        #endif
+
+    } // vec3 light;
+
 
     // ======== color process ========
 
-    #if defined tsh_PROGRAM_gbuffers_block
-        if(blockEntityId == 20480) {
-            color = endPortal_CalcPortalColor(gtexture, screenPos.xy);
-        }
-    #endif
+    vec4 color;{
 
-    float fogDensity = 0.0;
+        float fogDensity; {
 
-    #if !defined tsh_PROGRAM_gbuffers_skytextured
-        fogDensity = tshf_CalcFogDensity(scenePos, fogStart, fogEnd, fogShape);
-    #endif
+            fogDensity = tshf_CalcFogDensity(scenePos, fogStart, fogEnd, fogShape);
 
-    #if !defined tsh_PROGRAM_gbuffers_skybasic
-        fogDensity *= 0.9;
-    #endif
+            #if !defined tsh_PROGRAM_gbuffers_skybasic
+                fogDensity *= 0.9;
+            #endif
 
-    #if defined tsh_PROGRAM_gbuffers_armor_glint
-        color.rgb *= 1.0 - fogDensity;
-    #elif defined tsh_PROGRAM_gbuffers_damagedblock
-        color.a *= 1.0 - fogDensity;
-    #else
-        color.rgb = mix(color.rgb, color_SRGBEOTF(fogColor), fogDensity);
-    #endif
+        } // float fogDensity;
+
+/*
+        #if defined tsh_PROGRAM_gbuffers_block
+            if(blockEntityId == 20480) {
+                color = endPortal_CalcPortalColor(gtexture, screenPos.xy);
+            } else {
+                color = diffuse * vec4(light, 1.0);
+            }
+        #else
+            color = diffuse * vec4(light, 1.0);
+        #endif
+*/
+        color = diffuse * vec4(light, 1.0);
+
+        #if defined tsh_PROGRAM_gbuffers_skytextured
+
+            if(renderStage == MC_RENDER_STAGE_SUN)
+            {
+                color.rgb = color_SUN_LUMINANCE * (1.0 - pow((1.0 - color).rgb, vec3(1.0 / 6.0)));
+                color.rgb *= 2.0;
+            }
+
+        #endif
+
+        #if defined tsh_PROGRAM_gbuffers_armor_glint
+            color.rgb *= 1.0 - fogDensity;
+        #elif defined tsh_PROGRAM_gbuffers_damagedblock
+            color.a *= 1.0 - fogDensity;
+        #elif defined tsh_PROGRAM_gbuffers_skytextured
+            // nothing to do here
+        #else
+            color.rgb = mix(color.rgb, color_SRGBEOTF(fogColor), fogDensity);
+        #endif
+
+    } // vec4 color;
 
     // ======== write values to output variables ========
 
