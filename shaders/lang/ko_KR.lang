@@ -41,7 +41,7 @@ value.tsh_SHADOW_DISTANCE.496.0 = 31청크
 value.tsh_SHADOW_DISTANCE.512.0 = 32청크
 
 option.tsh_SHADOW_DISTORTION = 디스플레이 엔티티 그림자 고치기
-value.tsh_SHADOW_DISTORTION.0.0 = 켜짐
+value.tsh_SHADOW_DISTORTION.1.0 = 켜짐
 value.tsh_SHADOW_DISTORTION.6.0 = 꺼짐
 
 

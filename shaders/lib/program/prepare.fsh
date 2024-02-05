@@ -26,6 +26,7 @@ const int colortex0Format = RGB16F;
 const int colortex1Format = R16F;
 const int colortex2Format = RGB16F;
 */
+const vec4 colortex1ClearColor = vec4(-1.0, 0.0, 0.0, 1.0);
 
 void main() {
 

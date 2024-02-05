@@ -41,7 +41,7 @@ value.tsh_SHADOW_DISTANCE.496.0 = 31 chunks
 value.tsh_SHADOW_DISTANCE.512.0 = 32 chunks
 
 option.tsh_SHADOW_DISTORTION = Fix Display Entity Shadows
-value.tsh_SHADOW_DISTORTION.0.0 = ON
+value.tsh_SHADOW_DISTORTION.1.0 = ON
 value.tsh_SHADOW_DISTORTION.6.0 = OFF
 
 

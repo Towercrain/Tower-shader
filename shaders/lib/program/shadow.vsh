@@ -16,7 +16,6 @@ out vec4 vertexColor;
 
 // ======== uniform ========
 
-uniform int entityId;
 uniform int blockEntityId;
 
 uniform vec3 chunkOffset;
@@ -37,7 +36,7 @@ void main() {
     vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(vaPosition + chunkOffset, 1.0);
     clipPos = shadow_DistortShadowClipPos(clipPos);
 
-    if(mc_Entity.x == 16387.0 || blockEntityId == 20480 || entityId == 16384) {clipPos.z = 2.0;}
+    if(mc_Entity.x == 16387.0 || blockEntityId == 20480) {clipPos.z = 2.0;}
 
     // ======== write values to output variables ========
 
