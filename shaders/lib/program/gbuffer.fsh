@@ -89,10 +89,6 @@ void main() {
         )
     #endif
 
-    #ifdef tsh_VARYING_BlockId
-        int blockIdInt = int(floor(v_BlockId));
-    #endif
-
     vec4 screenPos = vec4(gl_FragCoord.xy / viewResolution, gl_FragCoord.z, 1.0);
     vec4 ndcPos = 2.0 * screenPos - 1.0;
     vec4 viewPos = gbufferProjectionInverse * ndcPos; viewPos /= viewPos.w;
@@ -102,7 +98,7 @@ void main() {
     // ======== diffuse process ========
 
     vec4 diffuse;
-
+    
     #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
         diffuse = vec4(v_VertexColor.rgb, 1.0);
     #else
@@ -137,19 +133,13 @@ void main() {
 
     vec3 light = vec3(1.0);
 
-    float sunDirectionHeight = dot(gbufferModelView[1].xyz, normalize(sunPosition));
-    vec3 sunLightColor = color_XYZ_TO_P3 * color_BT2020_TO_XYZ * exp(-color_ATMOSPHERE_DIFFUSE / abs(sunDirectionHeight));
-    if(sunDirectionHeight < 0.0) {
-        sunLightColor *= (1.0 / color_SUN_LUMINANCE) * moonBrightness; // moon light color
-    }
-    sunLightColor *= 1.0 - rainStrength;
-
     #ifdef tsh_VARYING_LightmapCoord
 
-        vec2 lighting = exp2(8.0 * v_LightmapCoord - 8.0) - (1.0 / 256.0);
+        vec2 lightmapCoordSquare = v_LightmapCoord * v_LightmapCoord;
+        vec2 lighting = (1.0 - sqrt(color_MINIMUM_LIGHT_INTENSITY)) * lightmapCoordSquare + sqrt(color_MINIMUM_LIGHT_INTENSITY);
+        lighting = lighting * lighting - color_MINIMUM_LIGHT_INTENSITY;
 
-        vec3 skyLight = color_SRGBEOTF(skyColor);
-        skyLight = 0.5 * skyLight + 0.25 * sunLightColor;
+        vec3 skyLight = color_SRGBEOTF(sqrt(skyColor)) + color_MINIMUM_SKY_LIGHT_COLOR;
         skyLight *= lighting.y;
 
         vec3 ambientLight = skyLight + color_MINIMUM_LIGHT_COLOR;
@@ -166,8 +156,6 @@ void main() {
 
         light = ambientLight + blockLight;
 
-        light += nightVision * 0.0625 * vec3(0.63, 0.81, 2.92);
-
     #endif
 
     #if defined tsh_USE_SHADOW
@@ -181,6 +169,7 @@ void main() {
         #endif
 
         #ifdef tsh_VARYING_BlockId
+            int blockIdInt = int(floor(v_BlockId));
             bool flip = (blockIdInt == 16385);
         #else
             const bool flip = false;
@@ -192,15 +181,23 @@ void main() {
 
         // ==== shadow light process ====
 
+        vec3 shadowLightColor = shadow_CalcShadowLight(shadowClipPos);
+
+        bool shadowClip = shadow_CalcShadowClip(shadowClipPos);
+        if(shadowClip) {shadowLightColor = vec3(1.0);}
+
         vec3 shadowLightDir = normalize(mat3(gbufferModelViewInverse) * shadowLightPosition);
         float dotLN = dot(shadowLightDir, v_Normal);
 
-        vec3 shadowLightColor = vec3(1.0);
-        bool shadowClip = shadow_CalcShadowClip(shadowClipPos);
-        if(!shadowClip) {shadowLightColor *= shadow_CalcShadowMask(shadowClipPos);}
+        shadowLightColor *= color_XYZ_TO_P3 * color_BT2020_TO_XYZ * exp(-color_ATMOSPHERE_DIFFUSE / max(shadowLightDir.y, 0.0));
+        shadowLightColor *= 1.0 - rainStrength;
+        if(dot(gbufferModelView[1].xyz, sunPosition) < 0.0) {
+            shadowLightColor *= color_MINIMUM_SKY_LIGHT_COLOR * moonBrightness;
+        }
+
         #ifdef tsh_VARYING_BlockId
             if(blockIdInt == 16385) {
-                shadowLightColor *= abs(dotLN);
+                //shadowLightColor *= 1.0;
             } else if(blockIdInt == 16387) {
                 shadowLightColor = vec3(0.0);
             } else {
@@ -213,15 +210,17 @@ void main() {
         #endif
 
         #ifdef tsh_VARYING_LightmapCoord
-            shadowLightColor *= lighting.y;
+            shadowLightColor *= lightmapCoordSquare.y;
         #endif
-
-        shadowLightColor *= sunLightColor;
 
         // ==== combining shadow light to light ====
 
         light += shadowLightColor;
 
+    #endif
+
+    #if defined tsh_PROGRAM_gbuffers_skytextured
+        if(renderStage == MC_RENDER_STAGE_SUN) {light = vec3(16.0);}
     #endif
 
     #if defined tsh_PROGRAM_gbuffers_textured_lit
@@ -242,16 +241,12 @@ void main() {
 
     // ======== color process ========
 
-    #if defined tsh_PROGRAM_gbuffers_skytextured
-        if(renderStage == MC_RENDER_STAGE_SUN) {color.rgb = color_SUN_LUMINANCE * (1.0 - pow((1.0 - color).rgb, vec3(1.0 / 6.0)));}
-    #endif
-/*
     #if defined tsh_PROGRAM_gbuffers_block
         if(blockEntityId == 20480) {
             color = endPortal_CalcPortalColor(gtexture, screenPos.xy);
         }
     #endif
-*/
+
     float fogDensity = 0.0;
 
     #if !defined tsh_PROGRAM_gbuffers_skytextured

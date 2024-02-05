@@ -67,13 +67,16 @@ vec3 color_TowerShaderToneMap(vec3 color) {
 
 
 #define color_ATMOSPHERE_DIFFUSE vec3(0.059127381, 0.11627981, 0.19583185) // 0.11627981 * pow(532.0 / WAVELENGTH, vec3(4.0))
-#define color_SUN_LUMINANCE 131.6461
 
 
 
-#define color_NIGHT_VISION_INTENSITY (1.0 / color_SUN_LUMINANCE)
 
-const float color_BLOCK_LIGHT_INTENSITY = (1.0 / 2.0);
+#define color_MINIMUM_SKY_LIGHT_INTENSITY (1.0 / 64.0)
+#define color_NIGHT_VISION_INTENSITY (1.0 / 16.0)
+#define color_BLOCK_LIGHT_INTENSITY (1.0 / 2.0)
+
+const vec3 color_MINIMUM_SKY_LIGHT_COLOR = vec3(0.6, 0.89, 3.23) * color_MINIMUM_SKY_LIGHT_INTENSITY;
+//const vec3 color_NIGHT_VISION_COLOR = vec3(0.93, 0.93, 1.87) * color_NIGHT_VISION_INTENSITY;
 const vec3 color_BLOCK_LIGHT_COLOR = vec3(1.17, 0.98, 0.71) * color_BLOCK_LIGHT_INTENSITY;
 
 #if defined tsh_DIMENSION_THE_NETHER
@@ -83,12 +86,12 @@ const vec3 color_BLOCK_LIGHT_COLOR = vec3(1.17, 0.98, 0.71) * color_BLOCK_LIGHT_
 
 #elif defined tsh_DIMENSION_OVERWORLD
 
-    const float color_MINIMUM_LIGHT_INTENSITY = (1.0 / 512.0);
+    const float color_MINIMUM_LIGHT_INTENSITY = (1.0 / 256.0);
     const vec3 color_MINIMUM_LIGHT_COLOR = color_MINIMUM_LIGHT_INTENSITY * vec3(1.0, 1.0, 1.0);
 
 #elif defined tsh_DIMENSION_THE_END
 
     const float color_MINIMUM_LIGHT_INTENSITY = (1.0 / 64.0);
-    const vec3 color_MINIMUM_LIGHT_COLOR = color_MINIMUM_LIGHT_INTENSITY * vec3(1.15, 0.7, 2.16);
+    const vec3 color_MINIMUM_LIGHT_COLOR = color_MINIMUM_LIGHT_INTENSITY * vec3(1.08, 0.9, 1.79);
 
 #endif

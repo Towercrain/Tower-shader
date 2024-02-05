@@ -66,13 +66,13 @@ vec3 shadow_CalcShadowOffset(vec4 shadowClipPos, vec3 normal, bool flip) {
     float gradient = shadow_CalcDistortionGradient(shadowClipPos.xy);
     vec3 shadowViewNorm = mat3(shadowModelView) * normal;
     vec3 shadowPosOffset = mat3(shadowProjection) * shadowViewNorm * texelSize / gradient;
-    if(flip) {shadowPosOffset *= sign(shadowViewNorm.z);}
+    if(flip) {shadowPosOffset *= tshf_SoftSign(shadowViewNorm.z + 0.01, 0.01);}
 
     return shadowPosOffset;
 
 }
 
-vec3 shadow_CalcShadowMask(vec4 shadowClipPos) {
+vec3 shadow_CalcShadowLight(vec4 shadowClipPos) {
 
     vec4 shadowScreenPos = 0.5 * shadowClipPos + 0.5;
 
