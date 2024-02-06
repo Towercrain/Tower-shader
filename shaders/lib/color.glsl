@@ -70,7 +70,7 @@ vec3 color_TowerShaderToneMap(vec3 color) {
 #define color_SUN_LUMINANCE 131.6461
 
 
-const vec3 color_NIGHT_VISION_COLOR = exp2(-4) * vec3(0.63, 0.81, 2.92);
+const vec3 color_NIGHT_VISION_COLOR = (1.0 / color_SUN_LUMINANCE) * vec3(0.63, 0.81, 2.92);
 const vec3 color_BLOCK_LIGHT_COLOR = exp2(-1) * vec3(1.17, 0.98, 0.71);
 
 #if defined tsh_DIMENSION_THE_NETHER

@@ -1,6 +1,7 @@
 option.sunPathRotation = 궤도 기울기
 option.sunPathRotation.comment = 해와 달, 별의 궤도를 기울입니다.
 
+option.tsh_NIGHTVISION_LIGHT = 고전적 야간 투시
 
 
 option.tsh_FAST_SHADOWS = 빠른 그림자

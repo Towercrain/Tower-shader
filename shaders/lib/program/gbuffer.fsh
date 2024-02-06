@@ -175,7 +175,9 @@ void main() {
 
             light = ambientLight + blockLight;
 
-            light += nightVision * color_NIGHT_VISION_COLOR;
+            #ifdef tsh_NIGHTVISION_LIGHT
+                light += nightVision * color_NIGHT_VISION_COLOR;
+            #endif
 
         #endif
 

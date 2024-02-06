@@ -1,6 +1,7 @@
 option.sunPathRotation = Sun Path Rotation
 option.sunPathRotation.comment = Tilts The celestial sphere.
 
+option.tsh_NIGHTVISION_LIGHT = Classic Night Vision
 
 
 option.tsh_FAST_SHADOWS = Fast Shadows
