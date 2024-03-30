@@ -50,7 +50,7 @@ void main() {
             vec3 sampleColor = texture(colortex0, sampleCoord).rgb;
             float sampleBrightness = dot(
                 color_TowerShaderToneMap(sampleColor),
-                vec3(color_P3_TO_XYZ[0].y, color_P3_TO_XYZ[1].y, color_P3_TO_XYZ[2].y)
+                vec3(color_SRGB_TO_XYZ[0].y, color_SRGB_TO_XYZ[1].y, color_SRGB_TO_XYZ[2].y)
             );
             float weight = calcWeight(sampleCoord);
             averageBrightness += sampleBrightness * weight;

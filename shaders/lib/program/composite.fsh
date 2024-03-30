@@ -55,12 +55,12 @@ void main() {
     color.rgb = max(color.rgb, 0.0);
 */
 
-    color.rgb = color_XYZ_TO_LMS * color_P3_TO_XYZ * color.rgb;
+    color.rgb = color_XYZ_TO_LMS * color_SRGB_TO_XYZ * color.rgb;
 
     color.rgb *= calcExposure(brightness);
     color.rgb = color_TowerShaderToneMap(color.rgb);
 
-    color.rgb = color_XYZ_TO_P3 * color_LMS_TO_XYZ * color.rgb;
+    color.rgb = color_XYZ_TO_SRGB * color_LMS_TO_XYZ * color.rgb;
 
     // ======== write values to output variables ========
 
