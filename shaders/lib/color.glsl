@@ -1,5 +1,5 @@
 
-#define color_WAVELENGTH vec3(630.0, 532.0, 467.0) // unit : nanometers, reference : Rec.2020
+#define color_WAVELENGTH vec3(612.0, 549.0, 465.0) // unit : nanometers
 
 /*
 RGB = XYZ_TO_RGB * XYZ
@@ -16,26 +16,15 @@ RGB = XYZ_TO_RGB * XYZ
     vec3(-0.49859011,  0.04155445,  1.05725381) \
 )
 
-#define color_P3_TO_XYZ mat3( \
-    vec3(0.48658879, 0.22898296, 0.00000000), \
-    vec3(0.26567182, 0.69174926, 0.04511408), \
-    vec3(0.19816944, 0.07926778, 1.04369241) \
+#define color_PRIMARIES_TO_XYZ mat3( \
+    vec3(0.47004978, 0.22944189, 0.00013293), \
+    vec3(0.30262467, 0.71824156, 0.00689629), \
+    vec3(0.17775560, 0.05231656, 1.08177728) \
 )
-#define color_XYZ_TO_P3 mat3( \
-    vec3( 2.49340549, -0.82947609,  0.03585448), \
-    vec3(-0.93134947,  1.76263669, -0.07619078), \
-    vec3(-0.40269602,  0.02362432,  0.95711553) \
-)
-
-#define color_BT2020_TO_XYZ mat3( \
-    vec3(0.63697030, 0.26270527, 0.00000000), \
-    vec3(0.14461883, 0.67800708, 0.02807307), \
-    vec3(0.16884092, 0.05928765, 1.06073343) \
-)
-#define color_XYZ_TO_BT2020 mat3( \
-    vec3( 1.71661816, -0.66667549,  0.01764404), \
-    vec3(-0.35566394,  1.61645976, -0.04278076), \
-    vec3(-0.25336141,  0.01576834,  0.94232661) \
+#define color_XYZ_TO_PRIMARIES mat3( \
+    vec3( 2.67612518, -0.85525996,  0.00512341), \
+    vec3(-1.12386116,  1.75210963, -0.01103153), \
+    vec3(-0.38538403,  0.05579975,  0.92409634) \
 )
 
 #define color_LMS_TO_XYZ mat3( \
@@ -66,7 +55,7 @@ vec3 color_TowerShaderToneMap(vec3 color) {
 }
 
 
-#define color_ATMOSPHERE_DIFFUSE vec3(0.059127381, 0.11627981, 0.19583185) // 0.11627981 * pow(532.0 / WAVELENGTH, vec3(4.0))
+#define color_ATMOSPHERE_DIFFUSE vec3(0.066396495, 0.10253248, 0.19922280) // 0.11627981 * pow(532.0 / WAVELENGTH, vec3(4.0))
 #define color_SUN_LUMINANCE 131.6461
 
 

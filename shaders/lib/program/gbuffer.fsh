@@ -137,7 +137,7 @@ void main() {
 
         float sunHeight = dot(gbufferModelView[1].xyz, normalize(sunPosition));
 
-        sunLightColor = color_XYZ_TO_SRGB * color_BT2020_TO_XYZ * exp(-color_ATMOSPHERE_DIFFUSE / abs(sunHeight));
+        sunLightColor = color_XYZ_TO_SRGB * color_PRIMARIES_TO_XYZ * exp(-color_ATMOSPHERE_DIFFUSE / abs(sunHeight));
 
         sunLightColor *= 2.0;
 
