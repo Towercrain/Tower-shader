@@ -4,9 +4,6 @@
 
 // ======== input ========
 
-in vec2 vaUV0;
-in vec3 vaPosition;
-in vec4 vaColor;
 in vec3 mc_Entity;
 
 // ======== output ========
@@ -34,15 +31,15 @@ uniform mat4 projectionMatrix;
 
 void main() {
 
-    vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(vaPosition + chunkOffset, 1.0);
+    vec4 clipPos = gl_ModelViewProjectionMatrix * (gl_Vertex + vec4(chunkOffset, 0.0));
     clipPos = shadow_DistortShadowClipPos(clipPos);
 
     if(mc_Entity.x == 16387.0 || blockEntityId == 20480 || entityId == 16384) {clipPos.z = 2.0;}
 
     // ======== write values to output variables ========
 
-    texCoord = (textureMatrix * vec4(vaUV0, 0.0, 1.0)).xy;
-    vertexColor = vec4(color_SRGBEOTF(vaColor.rgb), vaColor.a);
+    texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+    vertexColor = vec4(color_SRGBEOTF(gl_Color.rgb), gl_Color.a);
 
     gl_Position = clipPos;
 

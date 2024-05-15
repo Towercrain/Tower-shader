@@ -1,4 +1,4 @@
-#version 330 core
+#version 330 compatibility
 
 #define tsh_DIMENSION_THE_NETHER
 #define tsh_PROGRAM

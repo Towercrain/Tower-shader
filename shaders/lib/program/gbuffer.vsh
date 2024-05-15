@@ -6,12 +6,7 @@
 
 // ======== input ========
 
-in vec2 vaUV0;
-in ivec2 vaUV2;
-in vec3 vaPosition;
-in vec3 vaNormal;
 in vec3 mc_Entity;
-in vec4 vaColor;
 
 // ======== output ========
 
@@ -34,10 +29,6 @@ out vec4 v_VertexColor;
 
 uniform vec2 viewResolution;
 uniform vec3 chunkOffset;
-
-uniform mat4 textureMatrix;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
 
 uniform mat3 normalMatrix;
 uniform mat4 gbufferModelViewInverse;
@@ -63,11 +54,11 @@ void main() {
         )
     #endif
 
-    vec4 vertexColor = vec4(color_SRGBEOTF(vaColor.rgb), vaColor.a);
+    vec4 vertexColor = vec4(color_SRGBEOTF(gl_Color.rgb), gl_Color.a);
 
-    vec3 viewNorm = normalMatrix * vaNormal;
+    vec3 viewNorm = gl_NormalMatrix * gl_Normal;
     vec3 worldNorm = mat3(gbufferModelViewInverse) * viewNorm;
-    vec4 modelPos = vec4(vaPosition, 1.0);
+    vec4 modelPos = gl_Vertex;
 
     #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
         modelPos.xyz += chunkOffset;
@@ -76,9 +67,9 @@ void main() {
     vec4 clipPos;
 
     #if defined tsh_PROGRAM_gbuffers_line
-        clipPos = line_CalcPosition(projectionMatrix, vaPosition, vaNormal);
+        clipPos = line_CalcPosition(gl_ProjectionMatrix, gl_Vertex.xyz, gl_Normal);
     #else
-        clipPos = projectionMatrix * modelViewMatrix * modelPos;
+        clipPos = gl_ModelViewProjectionMatrix * modelPos;
     #endif
 
     // ======== write values to output variables ========
@@ -86,12 +77,12 @@ void main() {
     v_VertexColor = vertexColor;
 
     #ifdef tsh_VARYING_TextureCoord
-        v_TextureCoord = (textureMatrix * vec4(vaUV0, 0.0, 1.0)).xy;
+        v_TextureCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
     #endif
 
     #ifdef tsh_VARYING_LightmapCoord
         //v_LightmapCoord = (1.0 / 256.0) * vaUV2 + (0.5 / 16.0);
-        v_LightmapCoord = clamp((1.0 / 240.0) * vaUV2, 0.0, 1.0);
+        v_LightmapCoord = clamp((1.0 / 240.0) * gl_MultiTexCoord1.xy, 0.0, 1.0);
     #endif
 
     #ifdef tsh_VARYING_Normal

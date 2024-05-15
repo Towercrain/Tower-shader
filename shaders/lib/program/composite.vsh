@@ -4,9 +4,6 @@
 
 // ======== input ========
 
-in vec2 vaUV0;
-in vec3 vaPosition;
-
 // ======== output ========
 
 out float brightness;
@@ -17,9 +14,6 @@ out vec2 texCoord;
 uniform float nightVision;
 uniform float frameTime;
 uniform vec4 additiveRandom;
-
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
@@ -66,8 +60,8 @@ void main() {
     // ======== write values to output variables ========
 
     brightness = mixedBrightness;
-    texCoord = vaUV0;
+    texCoord = gl_MultiTexCoord0.xy;
 
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(vaPosition, 1.0);
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
 }

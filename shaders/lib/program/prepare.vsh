@@ -4,14 +4,9 @@
 
 // ======== input ========
 
-in vec3 vaPosition;
-
 // ======== output ========
 
 // ======== uniform ========
-
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
 
 // ======== constant and function ========
 
@@ -23,6 +18,6 @@ void main() {
 
     // ======== write values to output variables ========
 
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(vaPosition, 1.0);
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
 }

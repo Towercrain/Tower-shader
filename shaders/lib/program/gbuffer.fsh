@@ -271,18 +271,17 @@ void main() {
 
         } // float fogDensity;
 
-/*
+
         #if defined tsh_PROGRAM_gbuffers_block
             if(blockEntityId == 20480) {
-                color = endPortal_CalcPortalColor(gtexture, screenPos.xy);
+                //color = endPortal_CalcPortalColor(gtexture, screenPos.xy);
+                color = endPortal_CalcPortalColor(gtexture, screenPos.xy * viewResolution / viewResolution.y);
             } else {
                 color = diffuse * vec4(light, 1.0);
             }
         #else
             color = diffuse * vec4(light, 1.0);
         #endif
-*/
-        color = diffuse * vec4(light, 1.0);
 
         #if defined tsh_PROGRAM_gbuffers_skytextured
 
