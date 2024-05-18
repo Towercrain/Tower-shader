@@ -46,9 +46,9 @@ uniform mat4 gbufferModelViewInverse;
 void main() {
 
     #ifdef tsh_ORTHOGRAPHIC_PROJECTION
-        #define projectionMatrix mat4( \
-            vec4((1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * projectionMatrix[0].x, 0.0, 0.0, 0.0), \
-            vec4(0.0, (1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * projectionMatrix[1].y, 0.0, 0.0), \
+        #define gl_ProjectionMatrix mat4( \
+            vec4((1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * gl_ProjectionMatrix[0].x, 0.0, 0.0, 0.0), \
+            vec4(0.0, (1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * gl_ProjectionMatrix[1].y, 0.0, 0.0), \
             vec4(0.0, 0.0, -1.0 / 1024.0, 0.0), \
             vec4(0.0, 0.0, 0.0, 1.0) \
         )
@@ -69,7 +69,7 @@ void main() {
     #if defined tsh_PROGRAM_gbuffers_line
         clipPos = line_CalcPosition(gl_ProjectionMatrix, gl_Vertex.xyz, gl_Normal);
     #else
-        clipPos = gl_ModelViewProjectionMatrix * modelPos;
+        clipPos = gl_ProjectionMatrix * gl_ModelViewMatrix * modelPos;
     #endif
 
     // ======== write values to output variables ========
