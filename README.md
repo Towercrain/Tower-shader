@@ -15,9 +15,7 @@
 
 |             |  \| |  version < 1.2.4 |     version > 1.3 |
 | :---------: | :-: | :--------------: |  :--------------: |
-|         CPU |  \| |        i5 - 3550 |      i5 - 13600KF |
 |         GPU |  \| |  Geforce GTX 660 |  Geforce RTX 4060 |
-|         RAM |  \| |      DDR3 4+4 GB |     DDR5 16+16 GB |
 |  ShadersMod |  \| |         Optifine |  Iris Shaders Mod |
 | Performance |  \| | stable at 40 FPS | stable at 200 FPS |
 
@@ -40,10 +38,12 @@
 - README.md 리워크
 
 ### 1.4
-- 작성 예정
+- 나중에 써야지
 
-### 1.5
-- 언제 작성하지
+### 5
+- 버전 형식 변경
+- glsl 버전 변경
+- 엔드 포탈의 그래픽 활성화 및 업데이트
 
 ## todo
 
