@@ -1,5 +1,4 @@
 //uniform vec2 viewResolution;
-//uniform mat4 modelViewMatrix;
 
 const float line_LINE_WIDTH = 2.5;
 const float line_VIEW_SHRINK = 1.0 - (1.0 / 256.0);
@@ -10,14 +9,14 @@ const mat4 line_VIEW_SCALE = mat4(
     vec4(0.0, 0.0, 0.0, 1.0)
 );
 
-vec4 line_CalcPosition(mat4 projectionMatrix, vec3 modelPos, vec3 modelNorm) {
+vec4 line_CalcPosition(vec3 modelPos, vec3 modelNorm) {
 
     vec4 modelStartPos = vec4(modelPos, 1.0);
-    vec4 clipStartPos = projectionMatrix * line_VIEW_SCALE * modelViewMatrix * modelStartPos;
+    vec4 clipStartPos = gl_ProjectionMatrix * line_VIEW_SCALE * gl_ModelViewMatrix * modelStartPos;
     vec4 ndcStartPos = clipStartPos / clipStartPos.w;
 
     vec4 modelEndPos = vec4(modelPos + modelNorm, 1.0);
-    vec4 clipEndPos = projectionMatrix * line_VIEW_SCALE * modelViewMatrix * modelEndPos;
+    vec4 clipEndPos = gl_ProjectionMatrix * line_VIEW_SCALE * gl_ModelViewMatrix * modelEndPos;
     vec4 ndcEndPos = clipEndPos / clipEndPos.w;
 
     vec2 dir = normalize((ndcEndPos - ndcStartPos).xy * viewResolution);

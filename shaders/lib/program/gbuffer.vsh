@@ -67,7 +67,7 @@ void main() {
     vec4 clipPos;
 
     #if defined tsh_PROGRAM_gbuffers_line
-        clipPos = line_CalcPosition(gl_ProjectionMatrix, gl_Vertex.xyz, gl_Normal);
+        clipPos = line_CalcPosition(gl_Vertex.xyz, gl_Normal);
     #else
         clipPos = gl_ProjectionMatrix * gl_ModelViewMatrix * modelPos;
     #endif

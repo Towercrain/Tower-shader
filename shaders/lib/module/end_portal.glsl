@@ -53,12 +53,9 @@ vec4 endPortal_CalcPortalColor(sampler2D portalTexture, vec2 uv) {
 
     float vaGameTime = frameTimeCounter * (20.0 / 24000.0); // GameTime ~ 20.0*frameTimeCounter/24000.0
     vec3 color = vec3(0.4627451, 0.3529412, 0.61960784) * endPortal_COLORS[0];
-    vec4 coord = vec4(uv, 0.0, 1.0);
     for(int i = 0; i < 16; i++) {
-        color += texture(
-                portalTexture,
-                (coord * endPortal_CalcPortalLayerMatrix(float(i + 1), vaGameTime)).xy
-            ).rgb * endPortal_COLORS[i];
+        vec4 coord = vec4(uv, 0.0, 1.0) * endPortal_CalcPortalLayerMatrix(float(i + 1), vaGameTime);
+        color += texture(portalTexture, coord.xy).rgb * endPortal_COLORS[i];
     }
     color = color_SRGBEOTF(color);
     return vec4(color, 1.0);
