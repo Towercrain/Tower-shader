@@ -222,14 +222,18 @@ void main() {
                     } // float dotLN;
 
                     #ifdef tsh_VARYING_BlockId
-                        int blockIdInt = int(floor(v_BlockId));
-                        if(blockIdInt == 16385) {
+                        #if defined tsh_PROGRAM_gbuffers_water
                             normalLight = 0.5 * abs(dotLN);
-                        } else if(blockIdInt == 16387) {
-                            normalLight = 0.0;
-                        } else {
-                            normalLight = max(dotLN, 0.0);
-                        }
+                        #else
+                            int blockIdInt = int(floor(v_BlockId));
+                            if(blockIdInt == 16385) {
+                                normalLight = 0.5 * abs(dotLN);
+                            } else if(blockIdInt == 16387) {
+                                normalLight = 0.0;
+                            } else {
+                                normalLight = max(dotLN, 0.0);
+                            }
+                        #endif
                     #elif defined tsh_PROGRAM_gbuffers_clouds
                         normalLight = 0.25;
                     #else
