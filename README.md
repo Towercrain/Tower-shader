@@ -45,6 +45,11 @@
 - glsl 버전 변경
 - 엔드 포탈의 그래픽 활성화 및 업데이트
 
+## 스크린샷
+
+![2024-07-23_19 04 25](https://github.com/user-attachments/assets/64a6e9a1-b9ad-4b62-8811-3d485c7a2aaa)
+![2024-07-23_19 06 45](https://github.com/user-attachments/assets/14883d62-eb12-4022-bb47-bf7570d8fe73)
+
 ## todo
 
 - 옵티파인 호환성 업데이트
