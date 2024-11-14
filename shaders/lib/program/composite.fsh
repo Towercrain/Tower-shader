@@ -32,7 +32,7 @@ const bool colortex1Clear = false;
 
 float calcExposure(float brightness) {
 
-    return 0.25 / (brightness + mix(2.0 * (1.0 / color_SUN_LUMINANCE), exp2(-8), nightVision));
+    return 0.18 / (brightness + mix(2.0 * (1.0 / color_SUN_LUMINANCE), exp2(-8), nightVision));
 
 }
 
