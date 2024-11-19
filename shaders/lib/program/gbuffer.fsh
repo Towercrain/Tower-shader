@@ -291,8 +291,7 @@ void main() {
 
             if(renderStage == MC_RENDER_STAGE_SUN)
             {
-                color.rgb = color_SUN_LUMINANCE * (1.0 - pow((1.0 - color).rgb, vec3(1.0 / 6.0)));
-                color.rgb *= 2.0;
+                color.rgb *= color_SUN_LUMINANCE * sunLightColor;
             }
 
         #endif

@@ -8,8 +8,9 @@ in vec2 texCoord;
 
 // ======== output ========
 
-/* DRAWBUFFERS:0 */
+/* DRAWBUFFERS:02 */
 out vec4 outColor0;
+out vec4 outColor1;
 
 // ======== uniform ========
 
@@ -26,16 +27,22 @@ uniform sampler2D colortex2;
 
 void main() {
 
-    vec4 color0 = texture(colortex0, texCoord);
-
-    for(int s = -448; s <= 448; s += 64) {
-        color0 += texture(colortex2, texCoord + vec2(s, 0.0)/viewResolution) * min(0.015625 * abs(s), 1.0) * (1.0 / (9.8696 * s * s + 1.0));
-        color0 += texture(colortex2, texCoord + vec2(0.0, s)/viewResolution) * min(0.015625 * abs(s), 1.0) * (1.0 / (9.8696 * s * s + 1.0));
+    vec4 color2 = vec4(0.0);
+    const int s = 27;
+    for(int i = -s; i <= s; i += s) {
+        color2 += texture(colortex2, texCoord + vec2(i, -s)/viewResolution);
+        color2 += texture(colortex2, texCoord + vec2(i, 0)/viewResolution);
+        color2 += texture(colortex2, texCoord + vec2(i, s)/viewResolution);
     }
-    color0 /= color0.a;
+    color2 /= color2.a;
+
+    vec4 color0 = texture(colortex0, texCoord);
+    color0 += color2;
+
 
     // ======== write values to output variables ========
 
     outColor0 = color0;
+    outColor1 = color2;
 
 }
