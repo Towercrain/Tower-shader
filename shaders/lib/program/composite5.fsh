@@ -1,14 +1,19 @@
 // ======== preprocess ========
 
-#define tsh_PROGRAM_vsh
+#define tsh_PROGRAM_fsh
 
 // ======== input ========
 
+in vec2 texCoord;
+
 // ======== output ========
 
-out vec2 texCoord;
+/* DRAWBUFFERS:0 */
+out vec4 outColor0;
 
 // ======== uniform ========
+
+uniform sampler2D colortex0;
 
 // ======== constant and function ========
 
@@ -18,10 +23,10 @@ out vec2 texCoord;
 
 void main() {
 
+    vec4 color = texture(colortex0, texCoord);
+
     // ======== write values to output variables ========
 
-    texCoord = gl_MultiTexCoord0.xy;
-
-    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    outColor0 = color;
 
 }

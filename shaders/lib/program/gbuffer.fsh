@@ -245,7 +245,7 @@ void main() {
                 shadowLightColor = sunLightColor * normalLight * shadowMask;
 
                 #ifdef tsh_VARYING_LightmapCoord
-                    shadowLightColor *= lighting.y;
+                    //shadowLightColor *= lighting.y;
                 #endif
 
             } // vec3 shadowLightColor;

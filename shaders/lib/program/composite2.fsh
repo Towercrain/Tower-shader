@@ -17,6 +17,7 @@ out vec4 outColor1;
 uniform vec2 viewResolution;
 
 uniform sampler2D colortex0;
+uniform sampler2D colortex2;
 
 // ======== constant and function ========
 
@@ -29,10 +30,10 @@ void main() {
     vec4 color0 = texture(colortex0, texCoord);
     vec4 color2 = vec4(0.0);
 
-    for(int s = -7; s <= 7; s += 1) {
-        color0 += texture(colortex0, texCoord + vec2(s, 0.0)/viewResolution) * (1.0 - 0.125 * abs(s)) * min(abs(s), 1.0) * (1.0 / (9.8696 * s * s + 1.0));
-        color0 += texture(colortex0, texCoord + vec2(0.0, s)/viewResolution) * (1.0 - 0.125 * abs(s)) * min(abs(s), 1.0) * (1.0 / (9.8696 * s * s + 1.0));
-        color2 += texture(colortex0, texCoord + vec2(s, 0.0)/viewResolution) * (1.0 - 0.125 * abs(s));
+    for(int s = -56; s <= 56; s += 8) {
+        color0 += texture(colortex2, texCoord + vec2(s, 0.0)/viewResolution) * (1.0 - 0.015625 * abs(s)) * min(0.125 * abs(s), 1.0) * (1.0 / (9.8696 * s * s + 1.0));
+        color0 += texture(colortex2, texCoord + vec2(0.0, s)/viewResolution) * (1.0 - 0.015625 * abs(s)) * min(0.125 * abs(s), 1.0) * (1.0 / (9.8696 * s * s + 1.0));
+        color2 += texture(colortex2, texCoord + vec2(s, 0.0)/viewResolution) * (1.0 - 0.015625 * abs(s));
     }
     color0 /= color0.a;
     color2 /= color2.a;
