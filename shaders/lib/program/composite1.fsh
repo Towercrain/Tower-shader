@@ -28,7 +28,7 @@ uniform sampler2D colortex2;
 void main() {
 
     vec4 color2 = vec4(0.0);
-    const int s = 1;
+    const int s = 3;
     for(int i = -s; i <= s; i += s) {
         color2 += texture(colortex2, texCoord + vec2(i, -s)/viewResolution);
         color2 += texture(colortex2, texCoord + vec2(i, 0)/viewResolution);

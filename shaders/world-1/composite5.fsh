@@ -1,7 +1,7 @@
 #version 330 compatibility
 
-#define tsh_DIMENSION_OVERWORLD
+#define tsh_DIMENSION_THE_NETHER
 #define tsh_PROGRAM
 #define tsh_PROGRAM_composite
 
-#include "/lib/program/composite6.vsh"
+#include "/lib/program/composite5.fsh"

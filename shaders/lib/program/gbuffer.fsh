@@ -245,7 +245,7 @@ void main() {
                 shadowLightColor = sunLightColor * normalLight * shadowMask;
 
                 #ifdef tsh_VARYING_LightmapCoord
-                    //shadowLightColor *= lighting.y;
+                    shadowLightColor *= lighting.y;
                 #endif
 
             } // vec3 shadowLightColor;
@@ -291,7 +291,7 @@ void main() {
 
             if(renderStage == MC_RENDER_STAGE_SUN)
             {
-                color.rgb *= color_SUN_LUMINANCE * sunLightColor;
+                color.rgb *= color_SUN_LUMINANCE * sunLightColor + vec3(1.0, 0.0, 0.0);
             }
 
         #endif
