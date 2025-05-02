@@ -52,3 +52,5 @@ option.tsh_ORTHOGRAPHIC_PROJECTION.comment = Change the projection mode to ortho
 
 option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE = Orthographic View Distance
 option.tsh_ORTHOGRAPHIC_VIEW_DISTANCE.comment = Set viewing area on orthographic projection mode.
+
+

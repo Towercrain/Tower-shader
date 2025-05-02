@@ -40,6 +40,7 @@ uniform vec4 entityColor;
 uniform float fogStart, fogEnd;
 uniform vec3 shadowLightPosition;
 uniform vec3 sunPosition;
+uniform vec3 cameraPosition;
 
 uniform float nightVision;
 uniform float rainStrength;
@@ -79,17 +80,16 @@ uniform sampler2D gtexture;
     #include "/lib/module/shadow.glsl"
 #endif
 
+#if defined tsh_ORTHOGRAPHIC_PROJECTION
+    #define gbufferProjectionInverse mat4( \
+        vec4(tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[0].x, 0.0, 0.0, 0.0), \
+        vec4(0.0, tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[1].y, 0.0, 0.0), \
+        vec4(0.0, 0.0, -1024.0, 0.0), \
+        vec4(0.0, 0.0, 0.0, 1.0) \
+    )
+#endif
+
 void main() {
-
-
-    #ifdef tsh_ORTHOGRAPHIC_PROJECTION
-        #define gbufferProjectionInverse mat4( \
-            vec4(tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[0].x, 0.0, 0.0, 0.0), \
-            vec4(0.0, tsh_ORTHOGRAPHIC_VIEW_DISTANCE * gbufferProjectionInverse[1].y, 0.0, 0.0), \
-            vec4(0.0, 0.0, -1024.0, 0.0), \
-            vec4(0.0, 0.0, 0.0, 1.0) \
-        )
-    #endif
 
     vec4 screenPos = vec4(gl_FragCoord.xy / viewResolution, gl_FragCoord.z, 1.0);
     vec4 ndcPos = 2.0 * screenPos - 1.0;
@@ -123,14 +123,19 @@ void main() {
             diffuse.rgb = mix(diffuse.rgb, color_SRGBEOTF(entityColor.rgb), entityColor.a);
         #endif
 
+        #if defined tsh_PROGRAM_gbuffers_beaconbeam
+            diffuse.a *= 0.9;
+        #endif
+
+        #if !(defined tsh_PROGRAM_gbuffers_skybasic || defined tsh_PROGRAM_gbuffers_skytextured)
+            //diffuse.rgb = vec3(1.0); // whiteworld
+            //diffuse.rgb = vec3(0.0); // darkworld
+        #endif
+
     } // vec4 diffuse;
 
 
     if(diffuse.a < alphaTestRef) {discard;}
-
-    #if !(defined tsh_PROGRAM_gbuffers_skybasic || defined tsh_PROGRAM_gbuffers_skytextured)
-        //diffuse.rgb = vec3(1.0); // whiteworld
-    #endif
 
 
     vec3 sunLightColor; {
@@ -142,7 +147,7 @@ void main() {
         sunLightColor *= 2.0;
 
         if(sunHeight < 0.0) {
-            sunLightColor *= (1.0 / color_SUN_LUMINANCE) * moonBrightness; // moon light color
+            sunLightColor *= (1.0 / color_SUN_LUMINANCE) * moonBrightness * 0.25; // moon light color
         }
 
         sunLightColor *= 1.0 - rainStrength;
@@ -153,31 +158,35 @@ void main() {
 
         light = vec3(1.0);
 
-        #ifdef tsh_VARYING_LightmapCoord
+        #ifdef tsh_VARYING_LightmapCoord // 암부 표현 이상한거 해결해야함
 
-            vec2 lighting = exp2(8.0 * v_LightmapCoord - 8.0) - (1.0 / 256.0);
+            vec2 lighting = exp2(6.0 * v_LightmapCoord - 6.0) - exp2(-6.0);
 
-            vec3 skyLight = color_SRGBEOTF(skyColor);
-            skyLight = 0.5 * skyLight + 0.25 * sunLightColor;
-            skyLight *= lighting.y;
+            vec3 skyLight = mix(color_SRGBEOTF(skyColor), 0.25 * (sunLightColor + color_SRGBEOTF(skyColor)), 0.5);
+            vec3 blockLight = color_BLOCK_LIGHT_COLOR;
+
+            skyLight = (skyLight + color_MINIMUM_SKY_LIGHT_COLOR) * lighting.y;
+            blockLight *= lighting.x;
 
             vec3 ambientLight = skyLight + color_MINIMUM_LIGHT_COLOR;
+
+            #ifdef tsh_NIGHTVISION_LIGHT
+                float ambientLightY = dot(
+                    ambientLight,
+                    vec3(color_SRGB_TO_XYZ[0].y, color_SRGB_TO_XYZ[1].y, color_SRGB_TO_XYZ[2].y)
+                );
+                ambientLight = (ambientLight / ambientLightY) * mix(ambientLightY, sqrt(ambientLightY), nightVision);
+            #endif
 
             #ifdef tsh_VARYING_AmbientShading
                 ambientLight *= tshf_CalcAmbientLight(v_Normal);
             #endif
 
             #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
-                ambientLight *= v_VertexColor.a;
+                ambientLight *= v_VertexColor.a; // separated AO
             #endif
-
-            vec3 blockLight = color_BLOCK_LIGHT_COLOR * lighting.x;
 
             light = ambientLight + blockLight;
-
-            #ifdef tsh_NIGHTVISION_LIGHT
-                light += nightVision * color_NIGHT_VISION_COLOR;
-            #endif
 
         #endif
 
@@ -225,10 +234,9 @@ void main() {
                         #if defined tsh_PROGRAM_gbuffers_water
                             normalLight = 0.5 * abs(dotLN);
                         #else
-                            int blockIdInt = int(floor(v_BlockId));
-                            if(blockIdInt == 16385) {
+                            if(floor(v_BlockId) == 16385.0) {
                                 normalLight = 0.5 * abs(dotLN);
-                            } else if(blockIdInt == 16387) {
+                            } else if(floor(v_BlockId) == 16387.0) {
                                 normalLight = 0.0;
                             } else {
                                 normalLight = max(dotLN, 0.0);
@@ -245,7 +253,8 @@ void main() {
                 shadowLightColor = sunLightColor * normalLight * shadowMask;
 
                 #ifdef tsh_VARYING_LightmapCoord
-                    shadowLightColor *= lighting.y;
+                    //shadowLightColor *= v_LightmapCoord.y;
+                    shadowLightColor *= max(1.1 * v_LightmapCoord.y - 0.1, 0.0);
                 #endif
 
             } // vec3 shadowLightColor;
@@ -279,7 +288,7 @@ void main() {
         #if defined tsh_PROGRAM_gbuffers_block
             if(blockEntityId == 20480) {
                 //color = endPortal_CalcPortalColor(gtexture, screenPos.xy);
-                color = endPortal_CalcPortalColor(gtexture, screenPos.xy * viewResolution / viewResolution.y);
+                color = endPortal_CalcPortalColor(gtexture, gl_FragCoord.xy / viewResolution.y);
             } else {
                 color = diffuse * vec4(light, 1.0);
             }
@@ -289,10 +298,9 @@ void main() {
 
         #if defined tsh_PROGRAM_gbuffers_skytextured
 
-            if(renderStage == MC_RENDER_STAGE_SUN)
-            {
-                color.rgb = color_SUN_LUMINANCE * (1.0 - pow((1.0 - color).rgb, vec3(1.0 / 6.0)));
-                color.rgb *= 2.0;
+            if(dot(sunPosition, viewPos.xyz) > 0.0) {
+                color.rgb = color_SUN_LUMINANCE * (1.0 - pow((1.0 - color).rgb, vec3(1.0 / 8.0)));
+                color.rgb *= (sunLightColor + vec3(1.0 / color_SUN_LUMINANCE, 0.0, 0.0));
             }
 
         #endif

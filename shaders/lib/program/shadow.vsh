@@ -16,7 +16,6 @@ out vec4 vertexColor;
 uniform int entityId;
 uniform int blockEntityId;
 
-uniform vec3 chunkOffset;
 uniform mat4 textureMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
@@ -31,7 +30,7 @@ uniform mat4 projectionMatrix;
 
 void main() {
 
-    vec4 clipPos = gl_ModelViewProjectionMatrix * (gl_Vertex + vec4(chunkOffset, 0.0));
+    vec4 clipPos = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
     clipPos = shadow_DistortShadowClipPos(clipPos);
 
     if(mc_Entity.x == 16387.0 || blockEntityId == 20480 || entityId == 16384) {clipPos.z = 2.0;}

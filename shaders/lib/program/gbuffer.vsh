@@ -28,7 +28,7 @@ out vec4 v_VertexColor;
 // ======== uniform ========
 
 uniform vec2 viewResolution;
-uniform vec3 chunkOffset;
+//uniform vec3 chunkOffset;
 
 uniform mat3 normalMatrix;
 uniform mat4 gbufferModelViewInverse;
@@ -43,33 +43,28 @@ uniform mat4 gbufferModelViewInverse;
     #include "/lib/module/line.glsl"
 #endif
 
-void main() {
+#ifdef tsh_ORTHOGRAPHIC_PROJECTION
+    #define gl_ProjectionMatrix mat4( \
+        vec4((1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * gl_ProjectionMatrix[0].x, 0.0, 0.0, 0.0), \
+        vec4(0.0, (1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * gl_ProjectionMatrix[1].y, 0.0, 0.0), \
+        vec4(0.0, 0.0, -1.0 / 1024.0, 0.0), \
+        vec4(0.0, 0.0, 0.0, 1.0) \
+    )
+#endif
 
-    #ifdef tsh_ORTHOGRAPHIC_PROJECTION
-        #define gl_ProjectionMatrix mat4( \
-            vec4((1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * gl_ProjectionMatrix[0].x, 0.0, 0.0, 0.0), \
-            vec4(0.0, (1.0 / tsh_ORTHOGRAPHIC_VIEW_DISTANCE) * gl_ProjectionMatrix[1].y, 0.0, 0.0), \
-            vec4(0.0, 0.0, -1.0 / 1024.0, 0.0), \
-            vec4(0.0, 0.0, 0.0, 1.0) \
-        )
-    #endif
+void main() {
 
     vec4 vertexColor = vec4(color_SRGBEOTF(gl_Color.rgb), gl_Color.a);
 
     vec3 viewNorm = gl_NormalMatrix * gl_Normal;
     vec3 worldNorm = mat3(gbufferModelViewInverse) * viewNorm;
-    vec4 modelPos = gl_Vertex;
-
-    #if defined tsh_PROGRAM_gbuffers_terrain || defined tsh_PROGRAM_gbuffers_water
-        modelPos.xyz += chunkOffset;
-    #endif
 
     vec4 clipPos;
 
     #if defined tsh_PROGRAM_gbuffers_line
         clipPos = line_CalcPosition(gl_Vertex.xyz, gl_Normal);
     #else
-        clipPos = gl_ProjectionMatrix * gl_ModelViewMatrix * modelPos;
+        clipPos = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
     #endif
 
     // ======== write values to output variables ========
@@ -82,7 +77,7 @@ void main() {
 
     #ifdef tsh_VARYING_LightmapCoord
         //v_LightmapCoord = (1.0 / 256.0) * vaUV2 + (0.5 / 16.0);
-        v_LightmapCoord = clamp((1.0 / 240.0) * gl_MultiTexCoord1.xy, 0.0, 1.0);
+        v_LightmapCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
     #endif
 
     #ifdef tsh_VARYING_Normal

@@ -17,66 +17,13 @@
 //#define tsh_FAST_SHADOWS
 
 #ifdef tsh_FAST_SHADOWS
-    //avoiding glsl optimization for this option
 #endif
 
 // ======== shadow map ========
 
-#define tsh_SHADOW_DISTANCE 160.0 // [32.0 48.0 64.0 80.0 96.0 112.0 128.0 144.0 160.0 176.0 192.0 208.0 224.0 240.0 256.0 272.0 288.0 304.0 320.0 336.0 352.0 368.0 384.0 400.0 416.0 432.0 448.0 464.0 480.0 496.0 512.0]
-
-#define tsh_SHADOW_DISTORTION 6.0 // [1.0 6.0]
-
-
-#if tsh_SHADOW_DISTANCE <= 64.0
-
-    #if tsh_SHADOW_DISTORTION <= 1.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #elif tsh_SHADOW_DISTORTION <= 2.0
-        #define tsh_SHADOW_MAP_RESOLUTION 2048
-    #elif tsh_SHADOW_DISTORTION <= 4.0
-        #define tsh_SHADOW_MAP_RESOLUTION 1024
-    #else // tsh_SHADOW_DISTORTION <= 8.0
-        #define tsh_SHADOW_MAP_RESOLUTION 512
-    #endif
-
-#elif tsh_SHADOW_DISTANCE <= 128.0
-
-    #if tsh_SHADOW_DISTORTION <= 1.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #elif tsh_SHADOW_DISTORTION <= 2.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #elif tsh_SHADOW_DISTORTION <= 4.0
-        #define tsh_SHADOW_MAP_RESOLUTION 2048
-    #else // tsh_SHADOW_DISTORTION <= 8.0
-        #define tsh_SHADOW_MAP_RESOLUTION 1024
-    #endif
-
-#elif tsh_SHADOW_DISTANCE <= 256.0
-
-    #if tsh_SHADOW_DISTORTION <= 1.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #elif tsh_SHADOW_DISTORTION <= 2.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #elif tsh_SHADOW_DISTORTION <= 4.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #else // tsh_SHADOW_DISTORTION <= 8.0
-        #define tsh_SHADOW_MAP_RESOLUTION 2048
-    #endif
-
-#else // tsh_SHADOW_DISTANCE <= 512.0
-
-    #if tsh_SHADOW_DISTORTION <= 1.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #elif tsh_SHADOW_DISTORTION <= 2.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #elif tsh_SHADOW_DISTORTION <= 4.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #else // tsh_SHADOW_DISTORTION <= 8.0
-        #define tsh_SHADOW_MAP_RESOLUTION 4096
-    #endif
-
-#endif
-
+#define tsh_SHADOW_DISTANCE 512
+#define tsh_SHADOW_DISTORTION 16.0
+#define tsh_SHADOW_MAP_RESOLUTION 2048
 
 const bool shadowtex0Nearest = true;
 const bool shadowtex1Nearest = true;

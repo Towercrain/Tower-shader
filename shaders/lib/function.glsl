@@ -1,6 +1,3 @@
-#define diagonal2D(matrix) vec2(matrix[0].x, matrix[1].y)
-#define diagonal3D(matrix) vec3(matrix[0].x, matrix[1].y, matrix[2].z)
-#define diagonal4D(matrix) vec4(matrix[0].x, matrix[1].y, matrix[2].z, matrix[3].w)
 
 // ======== mathematic functions ========
 
@@ -91,6 +88,7 @@ float tshf_CalcFogDensity(vec4 scenePos, float fogStart, float fogEnd, int fogSh
 
     float fogDist = tshf_CalcFogDist(scenePos, fogShape);
     float fogDensity = smoothstep(fogStart, fogEnd, fogDist);
+    //float fogDensity = 1.0 / (1.0 / pow(2.0 * fogDist / (fogStart + fogEnd), 2.0 * ((fogStart + fogEnd) / (fogEnd - fogStart))) + 1.0);
     return fogDensity;
 
 }
@@ -106,5 +104,13 @@ float tshf_CalcProjDepth(mat4 projectionMatrix, float linearDepth) {
 float tshf_CalcLinearDepth(mat4 projectionMatrix, float depth) {
 
     return -projectionMatrix[3].z / (2.0 * depth - 1.0 + projectionMatrix[2].z);
+
+}
+
+// ======== exposure ========
+
+float tshf_CalcExposure(float brightness) {
+
+    return sqrt(0.25 / brightness);
 
 }

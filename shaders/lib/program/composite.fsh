@@ -30,12 +30,6 @@ uniform sampler2D colortex0;
 
 const bool colortex1Clear = false;
 
-float calcExposure(float brightness) {
-
-    return 0.18 / (brightness + mix(2.0 * (1.0 / color_SUN_LUMINANCE), exp2(-8), nightVision));
-
-}
-
 void main() {
 
     vec4 color = texture(colortex0, texCoord);
@@ -57,7 +51,7 @@ void main() {
 
     color.rgb = color_XYZ_TO_LMS * color_SRGB_TO_XYZ * color.rgb;
 
-    color.rgb *= calcExposure(brightness);
+    color.rgb *= tshf_CalcExposure(brightness);
     color.rgb = color_TowerShaderToneMap(color.rgb);
 
     color.rgb = color_XYZ_TO_SRGB * color_LMS_TO_XYZ * color.rgb;
@@ -65,8 +59,6 @@ void main() {
     // ======== write values to output variables ========
 
     outColor0 = color;
-    if(gl_FragCoord.xy == vec2(0.5, 0.5)) {
-        outColor1 = vec4(brightness, 0.0, 0.0, 1.0);
-    }
+    outColor1 = vec4(brightness, 0.0, 0.0, 1.0);
 
 }
